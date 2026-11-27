@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="합동 비서실">
 <meta name="description" content="빵빵이네 4구역 합동 비서실 — 해썹 생산실, 베이킹 클래스실, 즉판업 택배·포장존, 서무 업무실에서 피클들이 함께 일하는 방.">
 <title>빵빵이네 합동 비서실</title>
-<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%237FB2FF'/><text x='32' y='46' font-size='38' font-weight='800' text-anchor='middle' fill='white' font-family='sans-serif'>ㅂ</text></svg>">
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%23F9B4CD'/><text x='32' y='46' font-size='38' font-weight='800' text-anchor='middle' fill='white' font-family='sans-serif'>ㅊ</text></svg>">
 <style>
 /* ============================================================
    빵빵이네 합동 비서실 — single-file static app
@@ -68,10 +68,10 @@ ul{ list-style:none; }
 .brand{ display:flex; align-items:center; gap:9px; min-width:0; flex:1; }
 .mark{
   width:36px; height:36px; flex:none; border-radius:13px;
-  background:linear-gradient(160deg,#9fcaff,#5d9bf0);
+  background:linear-gradient(160deg,#ffd9e6,#f5a3c1);
   color:#fff; font-weight:800; font-size:19px;
   display:grid; place-items:center;
-  box-shadow:0 6px 14px rgba(93,155,240,.32), inset 0 -2px 0 rgba(0,0,0,.08);
+  box-shadow:0 6px 14px rgba(245,163,193,.34), inset 0 -2px 0 rgba(0,0,0,.08);
 }
 .brand h1{
   font-size:15.5px; font-weight:800; letter-spacing:-.03em; white-space:nowrap;
@@ -481,7 +481,7 @@ ul{ list-style:none; }
 <header class="topbar">
   <div class="topbar-in">
     <div class="brand">
-      <span class="mark" aria-hidden="true">ㅂ</span>
+      <span class="mark" aria-hidden="true">ㅊ</span>
       <div style="min-width:0">
         <h1>빵빵이네 합동 비서실</h1>
         <p>4구역 · 피클들이 함께 일하는 방</p>
@@ -785,7 +785,7 @@ ul{ list-style:none; }
       <p class="stage-hint">구역을 콕 누르면 내 피클이 그 자리로 걸어가요 · 위 탭으로는 둘러보기만</p>
 
       <form class="quickbar" id="statusForm" autocomplete="off">
-        <span class="qb-av" id="qbAvatar">ㅂ</span>
+        <span class="qb-av" id="qbAvatar">ㅊ</span>
         <input id="statusInput" maxlength="60" placeholder="내 상태 · 말풍선에 뜰 한 줄" aria-label="내 상태 메시지">
         <button class="btn btn-sm btn-primary" type="submit">저장</button>
       </form>
@@ -859,9 +859,9 @@ ul{ list-style:none; }
     <button class="x" type="button" data-close aria-label="닫기">✕</button>
     <h2 id="profTitle">내 피클</h2>
     <div class="preview">
-      <span class="mini" id="profPreview">ㅂ</span>
+      <span class="mini" id="profPreview">ㅊ</span>
       <div style="min-width:0">
-        <b id="profNamePrev">빵빵이</b>
+        <b id="profNamePrev">수빵이</b>
         <p class="muted small" id="profOwnerPrev">@kimsuhyeon382</p>
       </div>
     </div>
@@ -972,13 +972,17 @@ ul{ list-style:none; }
     { name: "민트", hex: "#8FD3A8" },
     { name: "라벤더", hex: "#C3A6F0" },
     { name: "핑크", hex: "#F49BC4" },
+    { name: "연핑크", hex: "#F9B4CD" },
     { name: "틸", hex: "#8FD7D3" },
     { name: "라떼", hex: "#C9AE93" }
   ];
   var DEFAULT_ME = {
-    name: "빵빵이", owner: "@kimsuhyeon382", consonant: "ㅂ", color: "#7FB2FF",
+    name: "수빵이", owner: "@kimsuhyeon382", consonant: "ㅊ", color: "#F9B4CD",
     zone: "admin", status: "비서실 세팅 중", role: "host"
   };
+  // 예전 기본값(빵빵이 · ㅂ · 블루)을 그대로 쓰던 브라우저만 새 기본값으로 한 번 옮깁니다.
+  var ME_VERSION = 2;
+  var LEGACY_ME = { name: "빵빵이", consonant: "ㅂ", color: "#7FB2FF" };
   var PRESENCE_TTL = 200000; // 200초 지난 흔적은 숨김
   var ME_KEY = "pickleOffice:me";
   var SAMPLE_DEFS = [
@@ -1058,9 +1062,21 @@ ul{ list-style:none; }
     for (k in DEFAULT_ME) if (Object.prototype.hasOwnProperty.call(DEFAULT_ME, k)) me[k] = DEFAULT_ME[k];
     for (k in stored) if (Object.prototype.hasOwnProperty.call(stored, k) && stored[k] != null) me[k] = stored[k];
 
+    if (!(Number(stored.v) >= ME_VERSION)) {
+      var isLegacy = (stored.name == null || stored.name === LEGACY_ME.name)
+        && (stored.consonant == null || stored.consonant === LEGACY_ME.consonant)
+        && (stored.color == null || normColor(stored.color) === LEGACY_ME.color);
+      if (isLegacy) {
+        me.name = DEFAULT_ME.name;
+        me.consonant = DEFAULT_ME.consonant;
+        me.color = DEFAULT_ME.color;
+      }
+    }
+    me.v = ME_VERSION;
+
     me.id = me.id || uid();
     me.color = normColor(me.color);
-    if (CONSONANTS.indexOf(me.consonant) < 0) me.consonant = "ㅂ";
+    if (CONSONANTS.indexOf(me.consonant) < 0) me.consonant = "ㅊ";
     if (ZONE_IDS.indexOf(me.zone) < 0) me.zone = "admin";
 
     var fromLink = false;
@@ -1254,7 +1270,7 @@ ul{ list-style:none; }
       items.forEach(function (it, i) {
         var patch = {};
         patch["n" + i] = {
-          text: it.text, zone: it.zone, author: "빵빵이", authorId: S.me.id,
+          text: it.text, zone: it.zone, author: S.me.name, authorId: S.me.id,
           at: now + i, done: false
         };
         cloudRefs.nRef.update(patch);
@@ -1265,7 +1281,7 @@ ul{ list-style:none; }
     var list = lsGet("notes", []);
     if (list.length) return;
     items.forEach(function (it, i) {
-      list.push({ id: uid() + i, text: it.text, zone: it.zone, author: "빵빵이", authorId: S.me.id, at: now + i, done: false });
+      list.push({ id: uid() + i, text: it.text, zone: it.zone, author: S.me.name, authorId: S.me.id, at: now + i, done: false });
     });
     lsSet("notes", list);
   }
@@ -1369,7 +1385,7 @@ ul{ list-style:none; }
       '<g class="bob">' +
         '<path d="M32 5c13.4 0 24 9.7 24 21.8 0 6.2-2.7 11.8-7 15.8-3.2 3-7.4 4.9-11.8 5.5-1.7.2-3.4.4-5.2.4s-3.5-.2-5.2-.4c-4.4-.6-8.6-2.5-11.8-5.5-4.3-4-7-9.6-7-15.8C8 14.7 18.6 5 32 5z" fill="var(--c)" stroke="rgba(60,44,28,.08)" stroke-width="1"/>' +
         '<ellipse cx="23" cy="15" rx="6.5" ry="4.6" fill="#ffffff" opacity=".38"/>' +
-        '<text class="jamo-mark" x="32" y="52" text-anchor="middle" font-size="21" font-weight="800" fill="#ffffff" opacity=".58" font-family="inherit">ㅂ</text>' +
+        '<text class="jamo-mark" x="32" y="52" text-anchor="middle" font-size="21" font-weight="800" fill="#ffffff" opacity=".58" font-family="inherit">ㅊ</text>' +
         '<g class="eyes">' +
           '<ellipse cx="23.6" cy="25" rx="3.1" ry="3.7" fill="#2e2b33"/>' +
           '<ellipse cx="40.4" cy="25" rx="3.1" ry="3.7" fill="#2e2b33"/>' +
@@ -1404,7 +1420,7 @@ ul{ list-style:none; }
     var jamo = btn.querySelector(".jamo");
     var nm = btn.querySelector(".nm");
     var mark = btn.querySelector(".jamo-mark");
-    var text = p.consonant || "ㅂ";
+    var text = p.consonant || "ㅊ";
     if (jamo.textContent !== text) jamo.textContent = text;
     if (mark.textContent !== text) mark.textContent = text;
     var name = p.name || "피클";
