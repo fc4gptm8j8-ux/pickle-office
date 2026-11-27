@@ -1,0 +1,2139 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f7f1e8">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="합동 비서실">
+<meta name="description" content="빵빵이네 4구역 합동 비서실 — 해썹 생산실, 베이킹 클래스실, 즉판업 택배·포장존, 서무 업무실에서 피클들이 함께 일하는 방.">
+<title>빵빵이네 합동 비서실</title>
+<link rel="icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='16' fill='%237FB2FF'/><text x='32' y='46' font-size='38' font-weight='800' text-anchor='middle' fill='white' font-family='sans-serif'>ㅂ</text></svg>">
+<style>
+/* ============================================================
+   빵빵이네 합동 비서실 — single-file static app
+   ============================================================ */
+:root{
+  --bg:#f8f2e9;
+  --card:#fffdf9;
+  --ink:#33302a;
+  --ink2:#7d7264;
+  --ink3:#a3988a;
+  --line:#ece1cf;
+  --line2:#e2d5bf;
+  --dark:#3b332a;
+  --shadow:0 12px 32px rgba(96,74,44,.10), 0 2px 6px rgba(96,74,44,.06);
+  --shadow-sm:0 2px 8px rgba(96,74,44,.08);
+  --r:20px;
+  --wall:#e7dac2;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  color:var(--ink);
+  background:
+    radial-gradient(1100px 520px at 8% -12%, #fffaf2 0%, rgba(255,250,242,0) 62%),
+    radial-gradient(900px 480px at 108% 4%, #eff7f4 0%, rgba(239,247,244,0) 58%),
+    linear-gradient(180deg,#f9f3ea,#f2ebdf 58%,#eee6d8);
+  background-attachment:fixed;
+  min-height:100vh;
+  -webkit-text-size-adjust:100%;
+  -webkit-tap-highlight-color:transparent;
+  letter-spacing:-.01em;
+}
+button{ font:inherit; color:inherit; }
+input,textarea,select{ font:inherit; color:inherit; }
+h1,h2,h3,p,ul,li{ margin:0; padding:0; }
+ul{ list-style:none; }
+.muted{ color:var(--ink2); }
+.small{ font-size:12px; }
+.hide{ display:none !important; }
+
+/* ---------- header ---------- */
+.topbar{
+  position:sticky; top:0; z-index:40;
+  padding:calc(env(safe-area-inset-top) + 8px) 0 8px;
+  background:rgba(249,244,236,.82);
+  -webkit-backdrop-filter:blur(16px) saturate(1.1);
+  backdrop-filter:blur(16px) saturate(1.1);
+  border-bottom:1px solid rgba(228,216,199,.7);
+}
+.topbar-in{
+  max-width:1120px; margin:0 auto; padding:0 14px;
+  display:flex; align-items:center; gap:10px;
+}
+.brand{ display:flex; align-items:center; gap:9px; min-width:0; flex:1; }
+.mark{
+  width:36px; height:36px; flex:none; border-radius:13px;
+  background:linear-gradient(160deg,#9fcaff,#5d9bf0);
+  color:#fff; font-weight:800; font-size:19px;
+  display:grid; place-items:center;
+  box-shadow:0 6px 14px rgba(93,155,240,.32), inset 0 -2px 0 rgba(0,0,0,.08);
+}
+.brand h1{
+  font-size:15.5px; font-weight:800; letter-spacing:-.03em; white-space:nowrap;
+  overflow:hidden; text-overflow:ellipsis;
+}
+.brand p{ font-size:11px; color:var(--ink3); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.bar-actions{ display:flex; align-items:center; gap:6px; flex:none; }
+.badge{
+  display:inline-flex; align-items:center; gap:5px;
+  padding:5px 9px; border-radius:999px; font-size:11px; font-weight:700;
+  border:1px solid var(--line2); background:#fff; color:var(--ink2); white-space:nowrap;
+}
+.badge i{ width:6px; height:6px; border-radius:50%; background:#c9bda9; display:block; }
+.badge.live{ color:#2f7c5c; border-color:#c6e5d5; background:#f2fbf6; }
+.badge.live i{ background:#35b37e; box-shadow:0 0 0 0 rgba(53,179,126,.5); animation:pulse 2.2s infinite; }
+@keyframes pulse{ 0%{box-shadow:0 0 0 0 rgba(53,179,126,.45)} 70%{box-shadow:0 0 0 7px rgba(53,179,126,0)} 100%{box-shadow:0 0 0 0 rgba(53,179,126,0)} }
+
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:6px;
+  padding:9px 14px; border-radius:13px; font-size:13px; font-weight:700;
+  background:#fff; border:1px solid var(--line2); color:var(--ink);
+  cursor:pointer; transition:transform .12s ease, box-shadow .16s ease, background .16s ease;
+  box-shadow:0 1px 0 rgba(255,255,255,.9) inset;
+  white-space:nowrap;
+}
+.btn:hover{ background:#fffdf8; box-shadow:var(--shadow-sm); }
+.btn:active{ transform:scale(.97); }
+.btn-primary{ background:var(--dark); border-color:var(--dark); color:#fff8ec; }
+.btn-primary:hover{ background:#4a4034; }
+.btn-sm{ padding:7px 11px; font-size:12px; border-radius:11px; }
+.btn.ghost{ background:transparent; box-shadow:none; }
+.btn.wide{ width:100%; }
+.btn[disabled]{ opacity:.5; pointer-events:none; }
+.icon-btn{
+  width:34px; height:34px; border-radius:12px; border:1px solid var(--line2);
+  background:#fff; display:grid; place-items:center; cursor:pointer; font-size:15px;
+}
+.icon-btn:active{ transform:scale(.95); }
+
+/* ---------- layout ---------- */
+.wrap{ max-width:1120px; margin:0 auto; padding:14px 14px calc(40px + env(safe-area-inset-bottom)); }
+.layout{ display:grid; grid-template-columns:minmax(0,1fr); gap:14px; }
+@media (min-width:980px){
+  .layout{ grid-template-columns:minmax(0,1.4fr) 392px; align-items:start; gap:18px; }
+  .panel{ position:sticky; top:74px; max-height:calc(100vh - 96px); }
+}
+.col-left{ min-width:0; }
+
+/* ---------- floorplan stage ---------- */
+.stage{
+  position:relative; width:100%; max-width:680px; margin:0 auto;
+  aspect-ratio:1 / 1;
+  border-radius:28px;
+  background:#efe6d8;
+  box-shadow:0 20px 44px rgba(96,74,44,.16), 0 0 0 1px rgba(120,95,60,.10);
+  overflow:hidden;
+  touch-action:manipulation;
+  user-select:none; -webkit-user-select:none;
+}
+/* walls (with doorways at the centre) */
+.stage::before,.stage::after{ content:""; position:absolute; z-index:3; pointer-events:none; }
+.stage::before{
+  left:50%; top:0; bottom:0; width:11px; margin-left:-5.5px;
+  background:linear-gradient(90deg,#d3c1a4 0%,#f3e8d5 32%,#f7eddc 62%,#d3c1a4 100%);
+  -webkit-mask-image:linear-gradient(180deg,#000 0 41%,rgba(0,0,0,0) 41% 59%,#000 59% 100%);
+  mask-image:linear-gradient(180deg,#000 0 41%,rgba(0,0,0,0) 41% 59%,#000 59% 100%);
+}
+.stage::after{
+  top:50%; left:0; right:0; height:11px; margin-top:-5.5px;
+  background:linear-gradient(180deg,#d3c1a4 0%,#f3e8d5 32%,#f7eddc 62%,#d3c1a4 100%);
+  -webkit-mask-image:linear-gradient(90deg,#000 0 41%,rgba(0,0,0,0) 41% 59%,#000 59% 100%);
+  mask-image:linear-gradient(90deg,#000 0 41%,rgba(0,0,0,0) 41% 59%,#000 59% 100%);
+}
+.room{
+  position:absolute; width:50%; height:50%; z-index:1;
+  overflow:hidden; cursor:pointer; outline:none;
+  background:#eee5d6;
+  transition:box-shadow .2s ease;
+}
+.room[data-zone="haccp"]{ left:0; top:0; }
+.room[data-zone="class"]{ left:50%; top:0; }
+.room[data-zone="packing"]{ left:0; top:50%; }
+.room[data-zone="admin"]{ left:50%; top:50%; }
+.room:focus-visible{ box-shadow:inset 0 0 0 3px #5d9bf0; }
+.room.active{ box-shadow:inset 0 0 0 3px var(--z), inset 0 0 40px rgba(80,60,35,.10); }
+.room svg{ display:block; width:100%; height:100%; }
+.room::after{ /* subtle floor vignette so rooms read separately */
+  content:""; position:absolute; inset:0; pointer-events:none;
+  box-shadow:inset 0 0 44px rgba(96,74,44,.10);
+}
+.room-tag{
+  position:absolute; left:6.5%; top:5.5%; z-index:2;
+  display:flex; align-items:center; gap:4px;
+  padding:3px 7px 3px 6px; border-radius:999px;
+  background:rgba(255,253,247,.86);
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.85);
+  box-shadow:0 2px 6px rgba(90,70,40,.10);
+  font-size:10px; font-weight:800; color:#4d4437; letter-spacing:-.03em;
+  white-space:nowrap; pointer-events:none;
+}
+.room-tag .dot{ width:5px; height:5px; border-radius:50%; background:var(--z); flex:none; }
+.room-foot{
+  position:absolute; left:6%; right:6%; bottom:4.5%; z-index:2;
+  display:flex; align-items:center; justify-content:space-between; gap:4px;
+  pointer-events:none;
+}
+.room-avs{ display:flex; align-items:center; }
+.room-avs .mini{ margin-left:-5px; box-shadow:0 0 0 1.5px rgba(255,253,247,.95); }
+.room-avs .mini:first-child{ margin-left:0; }
+.memo-badge{
+  display:inline-flex; align-items:center; gap:3px;
+  padding:2px 6px; border-radius:999px; font-size:9.5px; font-weight:800;
+  background:rgba(255,253,247,.9); color:#6b5c47; border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 1px 4px rgba(90,70,40,.10);
+}
+.memo-badge b{ font-weight:800; color:#b1743a; }
+
+/* ---------- critters ---------- */
+.critters{ position:absolute; inset:0; z-index:6; pointer-events:none; }
+.critter{
+  position:absolute; left:50%; top:50%; width:60px; height:72px;
+  padding:0; border:0; background:none; cursor:pointer; pointer-events:auto;
+  transform:translate(-50%,-50%);
+  transition:left .72s cubic-bezier(.42,.05,.32,1), top .72s cubic-bezier(.42,.05,.32,1);
+  -webkit-tap-highlight-color:transparent;
+  overflow:visible;
+}
+.critter.no-anim{ transition:none !important; }
+.critter:focus-visible{ outline:none; }
+.critter:focus-visible .body{ filter:drop-shadow(0 0 0 #fff) drop-shadow(0 0 6px rgba(93,155,240,.9)); }
+.critter .body{ display:block; width:44px; height:46px; margin:0 auto; position:relative; filter:drop-shadow(0 4px 6px rgba(70,52,30,.18)); }
+.critter .body svg{ width:100%; height:100%; display:block; overflow:visible; }
+.critter .bob{ transition:transform .2s ease; }
+.critter.walking .bob{ animation:walk .46s ease-in-out infinite; }
+@keyframes walk{ 0%,100%{transform:translateY(0) rotate(-1.5deg)} 50%{transform:translateY(-2.5px) rotate(1.5deg)} }
+.critter .eyes{ animation:blink 7s infinite; transform-origin:32px 26px; }
+@keyframes blink{ 0%,94%,100%{transform:scaleY(1)} 96.5%{transform:scaleY(.12)} }
+.critter .tag{
+  position:absolute; left:50%; top:100%; transform:translate(-50%,-2px);
+  display:inline-flex; align-items:center; gap:3px; max-width:76px;
+  padding:1px 5px; border-radius:999px; white-space:nowrap;
+  background:rgba(255,253,247,.92); border:1px solid rgba(255,255,255,.9);
+  box-shadow:0 1px 4px rgba(70,52,30,.12);
+  font-size:8.5px; font-weight:700; color:#4d4437; letter-spacing:-.02em;
+}
+.critter .tag .jamo{ color:#8a7a63; font-weight:800; }
+.critter .tag .nm{ overflow:hidden; text-overflow:ellipsis; }
+.critter.me .body::after{
+  content:""; position:absolute; inset:-5px; border-radius:50%;
+  border:2px dashed rgba(255,255,255,.9);
+  box-shadow:0 0 0 1px rgba(120,95,60,.16);
+  animation:spin 14s linear infinite;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+.critter .bubble{
+  position:absolute; left:50%; bottom:calc(100% + 2px); transform:translate(-50%, 4px) scale(.9);
+  max-width:124px; min-width:34px;
+  padding:4px 7px; border-radius:9px;
+  background:rgba(255,253,248,.97); border:1px solid rgba(226,213,191,.95);
+  box-shadow:0 3px 10px rgba(70,52,30,.14);
+  font-size:9px; line-height:1.28; font-weight:600; color:#4f4536;
+  text-align:center; letter-spacing:-.02em;
+  opacity:0; pointer-events:none;
+  transition:opacity .18s ease, transform .18s ease;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+  word-break:break-word;
+}
+.critter .bubble::after{
+  content:""; position:absolute; left:50%; top:100%; margin-left:-4px;
+  border:4px solid transparent; border-top-color:rgba(255,253,248,.97);
+}
+.critter .bubble.on{ opacity:1; transform:translate(-50%,0) scale(1); }
+.sample-chip{ display:none; }
+
+/* ---------- quick bar ---------- */
+.stage-hint{
+  max-width:680px; margin:9px auto 0; text-align:center;
+  font-size:11px; color:var(--ink3); letter-spacing:-.02em;
+}
+.quickbar{
+  max-width:680px; margin:10px auto 0;
+  display:flex; align-items:center; gap:8px;
+  padding:8px 8px 8px 10px; border-radius:18px;
+  background:rgba(255,253,249,.9); border:1px solid var(--line);
+  box-shadow:var(--shadow-sm);
+}
+.quickbar .qb-av{
+  width:28px; height:28px; flex:none; border-radius:50%;
+  display:grid; place-items:center; font-weight:800; font-size:13px; color:#fff;
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.08);
+}
+.quickbar input{
+  flex:1; min-width:0; border:0; background:transparent; outline:none;
+  font-size:16px; padding:6px 2px;
+}
+.quickbar input::placeholder{ color:#b3a795; font-size:13px; }
+.mode-note{
+  max-width:680px; margin:8px auto 0; text-align:center;
+  font-size:10.5px; color:var(--ink3); letter-spacing:-.02em; line-height:1.4;
+}
+
+/* ---------- panel ---------- */
+.panel{
+  display:flex; flex-direction:column; min-width:0;
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--r); box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.tabs{
+  display:flex; gap:4px; padding:8px 8px 0; overflow-x:auto;
+  -webkit-overflow-scrolling:touch; scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{ display:none; }
+.tab{
+  flex:1 0 auto; display:inline-flex; align-items:center; justify-content:center; gap:4px;
+  padding:8px 10px; border-radius:11px; border:1px solid transparent;
+  background:transparent; color:var(--ink2); font-size:12px; font-weight:700;
+  cursor:pointer; white-space:nowrap; transition:background .16s ease,color .16s ease;
+}
+.tab i{ width:6px; height:6px; border-radius:50%; background:var(--z); display:block; }
+.tab:hover{ background:#f7f1e7; }
+.tab.on{ background:#f3ece0; color:var(--ink); border-color:#e9dfcd; }
+.panel-body{ flex:1; overflow:auto; padding:12px 14px 6px; -webkit-overflow-scrolling:touch; }
+.panel-body::-webkit-scrollbar{ width:6px; }
+.panel-body::-webkit-scrollbar-thumb{ background:#e3d8c6; border-radius:6px; }
+
+.p-head h2{ font-size:16px; font-weight:800; letter-spacing:-.03em; }
+.p-head .muted{ font-size:12px; margin-top:3px; line-height:1.45; }
+.zone-title{ display:flex; align-items:center; gap:7px; }
+.zdot{ width:9px; height:9px; border-radius:50%; background:var(--z); flex:none; }
+.chips{ display:flex; flex-wrap:wrap; gap:5px; margin-top:9px; }
+.chip-sm{
+  padding:4px 8px; border-radius:999px; font-size:11px; font-weight:700;
+  background:#f7f2e8; color:#7b6b52; border:1px solid #eee3d1;
+}
+.chip{ font-size:9.5px; font-weight:800; padding:1px 5px; border-radius:999px; }
+.chip.me{ background:#e8f1ff; color:#3f7ad0; }
+.chip.sample{ background:#f4ece0; color:#9c8a70; }
+.people{ display:flex; flex-direction:column; gap:5px; }
+.person{
+  display:flex; align-items:center; gap:9px; padding:7px 8px; border-radius:13px;
+  cursor:pointer; transition:background .14s ease;
+}
+.person:hover{ background:#faf5ec; }
+.person .mini{ flex:none; }
+.p-meta{ min-width:0; flex:1; }
+.p-name{ display:flex; align-items:center; gap:4px; font-size:12.5px; font-weight:800; letter-spacing:-.02em; }
+.p-status{ font-size:11.5px; color:var(--ink2); margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.zone-chip{
+  flex:none; padding:2px 7px; border-radius:999px; font-size:10px; font-weight:800;
+  background:#f7f2e8; color:#7b6b52; border:1px solid #eee3d1;
+}
+.mini{
+  width:24px; height:24px; border-radius:50%; display:grid; place-items:center;
+  font-size:10.5px; font-weight:800; color:#fff; background:var(--c,#9bb);
+  box-shadow:inset 0 -2px 0 rgba(0,0,0,.10); flex:none;
+}
+.room-avs .mini{ width:17px; height:17px; font-size:8px; }
+
+.sec{ display:flex; align-items:center; gap:6px; margin:16px 0 8px; font-size:12px; font-weight:800; color:#6b5c47; letter-spacing:-.02em; }
+.sec .cnt{ font-size:10.5px; font-weight:800; color:#a68d6b; background:#f6efe3; border-radius:999px; padding:1px 6px; }
+.sec .link{ margin-left:auto; font-size:11px; font-weight:700; color:#a68d6b; background:none; border:0; cursor:pointer; text-decoration:underline; }
+
+.notes{ display:flex; flex-direction:column; gap:7px; }
+.note{
+  display:flex; align-items:flex-start; gap:9px;
+  padding:9px 9px 9px 8px; border-radius:14px;
+  background:#fffdf8; border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(96,74,44,.04);
+  transition:opacity .16s ease, background .16s ease;
+}
+.note.done{ opacity:.5; background:#faf7f0; }
+.note.done .n-body p{ text-decoration:line-through; }
+.check{
+  flex:none; width:20px; height:20px; margin-top:1px; border-radius:7px;
+  border:1.8px solid #d8cbb6; background:#fff; cursor:pointer;
+  font-size:11px; font-weight:800; color:#fff; line-height:1;
+  display:grid; place-items:center; transition:background .14s ease, border-color .14s ease;
+}
+.note.done .check{ background:#6bbf9a; border-color:#6bbf9a; }
+.n-body{ min-width:0; flex:1; }
+.n-body p{ font-size:12.5px; line-height:1.45; letter-spacing:-.02em; word-break:break-word; }
+.n-meta{ display:flex; align-items:center; gap:4px; margin-top:4px; font-size:10px; color:var(--ink3); flex-wrap:wrap; }
+.del{
+  flex:none; width:22px; height:22px; border-radius:7px; border:0; background:transparent;
+  color:#c3b6a2; font-size:15px; line-height:1; cursor:pointer;
+  display:grid; place-items:center;
+}
+.del:hover{ background:#f8efe2; color:#b1743a; }
+.del.armed{ width:auto; padding:0 6px; font-size:10px; font-weight:800; background:#fdeee0; color:#b1743a; border:1px solid #f3d9bf; }
+.empty{ font-size:12px; color:var(--ink3); padding:12px 4px; line-height:1.5; text-align:center; }
+
+.note-form{ border-top:1px solid var(--line); padding:10px 12px calc(10px + env(safe-area-inset-bottom)); background:#fffdf9; }
+.nf-head{ display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+.nf-head select{
+  flex:none; padding:5px 8px; border-radius:9px; border:1px solid var(--line2);
+  background:#fbf6ed; font-size:11.5px; font-weight:700; color:#6b5c47; max-width:110px;
+}
+.nf-head .lbl{ font-size:11px; color:var(--ink3); font-weight:700; }
+.note-form textarea{
+  width:100%; resize:none; border:1px solid var(--line2); border-radius:12px;
+  padding:9px 10px; font-size:16px; line-height:1.4; background:#fffdf8; outline:none;
+  transition:border-color .16s ease, box-shadow .16s ease;
+}
+.note-form textarea:focus{ border-color:#cdbb9f; box-shadow:0 0 0 3px rgba(205,187,159,.18); }
+.nf-foot{ display:flex; align-items:center; gap:8px; margin-top:6px; }
+.nf-foot .cnt{ font-size:10.5px; color:var(--ink3); margin-right:auto; }
+
+/* ---------- modal ---------- */
+.modal{
+  position:fixed; inset:0; z-index:80; display:flex; align-items:flex-end; justify-content:center;
+  padding:0; background:rgba(56,44,30,.34);
+  -webkit-backdrop-filter:blur(3px); backdrop-filter:blur(3px);
+  animation:fade .18s ease;
+}
+.modal[hidden]{ display:none; }
+@keyframes fade{ from{opacity:0} to{opacity:1} }
+@media (min-width:620px){ .modal{ align-items:center; padding:24px; } }
+.sheet{
+  position:relative; width:100%; max-width:460px; max-height:90vh; overflow:auto;
+  background:var(--card); border-radius:24px 24px 0 0;
+  padding:20px 18px calc(18px + env(safe-area-inset-bottom));
+  box-shadow:0 -10px 40px rgba(56,44,30,.24);
+  animation:slide .24s cubic-bezier(.2,.9,.3,1);
+}
+@media (min-width:620px){ .sheet{ border-radius:22px; padding:22px 22px 20px; animation:pop .2s ease; } }
+@keyframes slide{ from{transform:translateY(24px);opacity:.6} to{transform:none;opacity:1} }
+@keyframes pop{ from{transform:scale(.97);opacity:.6} to{transform:none;opacity:1} }
+.sheet h2{ font-size:17px; font-weight:800; letter-spacing:-.03em; padding-right:30px; }
+.sheet .lead{ font-size:12.5px; color:var(--ink2); line-height:1.5; margin-top:5px; }
+.sheet .x{
+  position:absolute; right:12px; top:12px; width:30px; height:30px; border-radius:10px;
+  border:1px solid var(--line); background:#fff; cursor:pointer; font-size:13px; color:#8d8171;
+}
+.fld{ display:block; margin-top:13px; }
+.fld > span,.fld > label{ display:block; font-size:11.5px; font-weight:800; color:#6b5c47; margin-bottom:5px; letter-spacing:-.02em; }
+.fld input,.fld select{
+  width:100%; padding:10px 11px; border-radius:12px; border:1px solid var(--line2);
+  background:#fffdf8; font-size:16px; outline:none;
+}
+.fld input:focus,.fld select:focus{ border-color:#cdbb9f; box-shadow:0 0 0 3px rgba(205,187,159,.18); }
+.jamo-grid{ display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+.jamo-grid button{
+  aspect-ratio:1/1; border-radius:10px; border:1px solid var(--line2); background:#fffdf8;
+  font-size:14px; font-weight:800; cursor:pointer; color:#6b5c47;
+}
+.jamo-grid button.on{ background:var(--dark); border-color:var(--dark); color:#fff8ec; }
+.swatches{ display:flex; gap:7px; flex-wrap:wrap; }
+.swatches button{
+  width:28px; height:28px; border-radius:50%; border:2px solid transparent; cursor:pointer;
+  background:var(--c); box-shadow:inset 0 -2px 0 rgba(0,0,0,.10);
+}
+.swatches button.on{ border-color:#3b332a; box-shadow:0 0 0 2px #fff inset; }
+.row{ display:flex; gap:8px; margin-top:18px; }
+.row .btn{ flex:1; }
+.linkbox{ display:flex; gap:6px; margin-top:6px; }
+.linkbox input{
+  width:100%; padding:10px 11px; border-radius:12px; border:1px solid var(--line2);
+  background:#f8f3e9; font-size:12px; color:#6b5c47; outline:none;
+}
+.hintbox{
+  margin-top:14px; padding:10px 12px; border-radius:13px;
+  background:#f8f3e8; border:1px solid #eee3d1;
+  font-size:11.5px; line-height:1.55; color:#7b6b52;
+}
+.preview{ display:flex; align-items:center; gap:10px; padding:10px 12px; border-radius:14px; background:#f8f3e8; border:1px solid #eee3d1; margin-top:12px; }
+.preview .mini{ width:34px; height:34px; font-size:15px; }
+.preview b{ font-size:13.5px; }
+.switch{ display:flex; align-items:center; gap:9px; margin-top:14px; font-size:12.5px; color:#6b5c47; font-weight:600; }
+.switch input{ width:18px; height:18px; accent-color:#3b332a; }
+
+/* ---------- toast ---------- */
+#toast{
+  position:fixed; left:50%; bottom:calc(22px + env(safe-area-inset-bottom)); transform:translate(-50%, 14px);
+  z-index:120; padding:9px 15px; border-radius:999px;
+  background:rgba(48,40,30,.94); color:#fff8ec; font-size:12.5px; font-weight:700;
+  opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease;
+  max-width:86vw; text-align:center;
+}
+#toast.on{ opacity:1; transform:translate(-50%,0); }
+
+/* ---------- misc ---------- */
+.footnote{ text-align:center; font-size:10.5px; color:var(--ink3); margin-top:18px; line-height:1.6; }
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001s !important; animation-iteration-count:1 !important; transition-duration:.001s !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">ㅂ</span>
+      <div style="min-width:0">
+        <h1>빵빵이네 합동 비서실</h1>
+        <p>4구역 · 피클들이 함께 일하는 방</p>
+      </div>
+    </div>
+    <div class="bar-actions">
+      <span class="badge local" id="connBadge"><i></i>로컬 미리보기</span>
+      <button class="btn btn-sm" id="btnInvite" type="button">초대</button>
+      <button class="btn btn-sm btn-primary" id="btnProfile" type="button">내 피클</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="layout">
+    <section class="col-left">
+
+      <div class="stage" id="stage" aria-label="4구역 비서실 평면도">
+
+        <!-- ============ 해썹 생산실 ============ -->
+        <div class="room" data-zone="haccp" style="--z:#48ae9f" role="button" tabindex="0" aria-label="해썹 생산실">
+          <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <pattern id="tileH" width="46" height="46" patternUnits="userSpaceOnUse">
+                <rect width="46" height="46" fill="#e9f2f1"/>
+                <path d="M46 0V46M0 46H46" stroke="#dbe7e5" stroke-width="1.4"/>
+              </pattern>
+              <linearGradient id="steelH" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f7fbfb"/><stop offset="1" stop-color="#ccd9da"/>
+              </linearGradient>
+              <linearGradient id="glassH" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#3d4d53"/><stop offset="1" stop-color="#1e292e"/>
+              </linearGradient>
+            </defs>
+            <rect width="400" height="400" fill="url(#tileH)"/>
+            <rect width="400" height="72" fill="#f8fbfa"/>
+            <rect y="72" width="400" height="6" fill="#dfeae8"/>
+
+            <!-- HACCP board -->
+            <rect x="140" y="14" width="124" height="46" rx="7" fill="#ffffff" stroke="#cfe0dd" stroke-width="2"/>
+            <rect x="152" y="26" width="64" height="5" rx="2.5" fill="#d9ebe7"/>
+            <rect x="152" y="37" width="44" height="5" rx="2.5" fill="#d9ebe7"/>
+            <circle cx="244" cy="37" r="10" fill="#e6f5f1"/>
+            <path d="M244 31v6l4 3" stroke="#4aa79a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+
+            <!-- stainless prep counter -->
+            <rect x="20" y="88" width="180" height="58" rx="10" fill="#b9c8c9" opacity=".35"/>
+            <rect x="20" y="84" width="180" height="58" rx="10" fill="url(#steelH)" stroke="#b6c6c7" stroke-width="1.6"/>
+            <rect x="26" y="90" width="168" height="10" rx="5" fill="#fbfefe" opacity=".8"/>
+            <line x1="118" y1="100" x2="118" y2="142" stroke="#c6d3d4" stroke-width="1.4"/>
+            <circle cx="70" cy="118" r="14" fill="#eef6f6" stroke="#bdcccc" stroke-width="1.6"/>
+            <circle cx="70" cy="118" r="6.5" fill="#d7e4e4"/>
+            <rect x="132" y="106" width="50" height="26" rx="5" fill="#eaf2f2" stroke="#bdcccc" stroke-width="1.4"/>
+            <rect x="139" y="113" width="36" height="3.5" rx="1.7" fill="#ccd9da"/>
+            <rect x="139" y="121" width="24" height="3.5" rx="1.7" fill="#ccd9da"/>
+
+            <!-- ingredient trolley -->
+            <rect x="20" y="154" width="82" height="52" rx="8" fill="#cfdadb" stroke="#b4c2c3" stroke-width="1.4"/>
+            <rect x="27" y="161" width="68" height="12" rx="4" fill="#f0f6f6"/>
+            <rect x="27" y="180" width="68" height="12" rx="4" fill="#f0f6f6"/>
+            <circle cx="94" cy="160" r="3" fill="#b9c7c8"/>
+
+            <!-- deck oven -->
+            <rect x="244" y="86" width="136" height="96" rx="10" fill="#b8c4c8" opacity=".25"/>
+            <rect x="244" y="84" width="136" height="96" rx="10" fill="#59686e"/>
+            <rect x="250" y="90" width="88" height="84" rx="7" fill="#4b5a60"/>
+            <rect x="256" y="95" width="76" height="32" rx="5" fill="url(#glassH)"/>
+            <rect x="256" y="95" width="76" height="32" rx="5" fill="#f6b975" opacity=".16"/>
+            <rect x="256" y="133" width="76" height="32" rx="5" fill="url(#glassH)"/>
+            <rect x="256" y="133" width="76" height="32" rx="5" fill="#f6b975" opacity=".16"/>
+            <circle cx="351" cy="100" r="4.5" fill="#dfe8e9"/>
+            <circle cx="351" cy="116" r="4.5" fill="#dfe8e9"/>
+            <circle cx="351" cy="132" r="4.5" fill="#e8a35f"/>
+            <circle cx="351" cy="148" r="4.5" fill="#dfe8e9"/>
+            <rect x="345" y="161" width="12" height="4" rx="2" fill="#8fa1a4"/>
+
+            <!-- cooling rack -->
+            <rect x="308" y="212" width="80" height="88" rx="8" fill="#dfe9e9" stroke="#c2d0d1" stroke-width="1.6"/>
+            <path d="M314 232h68M314 252h68M314 272h68" stroke="#c8d5d6" stroke-width="1.6"/>
+            <rect x="316" y="222" width="64" height="9" rx="3" fill="#f3f8f8"/>
+            <rect x="316" y="262" width="64" height="9" rx="3" fill="#f3f8f8"/>
+
+            <!-- sink -->
+            <rect x="16" y="292" width="82" height="72" rx="9" fill="url(#steelH)" stroke="#b6c6c7" stroke-width="1.6"/>
+            <rect x="24" y="300" width="66" height="40" rx="6" fill="#dbe7e8" stroke="#b9c7c8" stroke-width="1.4"/>
+            <circle cx="90" cy="306" r="4.5" fill="#cfdcdd"/>
+
+            <!-- floor drain -->
+            <circle cx="216" cy="214" r="9" fill="#dbe6e5"/>
+            <path d="M210 210h12M210 214h12M210 218h12" stroke="#c6d4d3" stroke-width="1.2"/>
+          </svg>
+          <div class="room-tag"><span class="dot"></span>해썹 생산실</div>
+          <div class="room-foot">
+            <div class="room-avs"></div>
+            <span class="memo-badge" hidden><b>0</b></span>
+          </div>
+        </div>
+
+        <!-- ============ 베이킹 클래스실 ============ -->
+        <div class="room" data-zone="class" style="--z:#e2a94b" role="button" tabindex="0" aria-label="베이킹 클래스실">
+          <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <pattern id="plankC" width="400" height="40" patternUnits="userSpaceOnUse">
+                <rect width="400" height="40" fill="#f4e2c8"/>
+                <path d="M0 39.5H400" stroke="#e6cdaa" stroke-width="1.6"/>
+                <path d="M120 0V40M300 0V40" stroke="#ecd6b6" stroke-width="1.2"/>
+              </pattern>
+            </defs>
+            <rect width="400" height="400" fill="url(#plankC)"/>
+            <rect width="400" height="64" fill="#fdf4e6"/>
+            <rect y="64" width="400" height="6" fill="#eeddc2"/>
+
+            <!-- whiteboard -->
+            <rect x="96" y="12" width="196" height="44" rx="7" fill="#ffffff" stroke="#e6d5bb" stroke-width="2"/>
+            <rect x="108" y="24" width="58" height="5" rx="2.5" fill="#f2c98a"/>
+            <rect x="174" y="24" width="32" height="5" rx="2.5" fill="#c8dcf3"/>
+            <rect x="108" y="35" width="104" height="5" rx="2.5" fill="#f6e2c6"/>
+            <circle cx="266" cy="34" r="8" fill="#ffe1b6"/>
+
+            <!-- demo counter -->
+            <rect x="240" y="88" width="138" height="60" rx="10" fill="#c9a97f" opacity=".3"/>
+            <rect x="240" y="86" width="138" height="60" rx="10" fill="#e9cda8" stroke="#d6b287" stroke-width="1.6"/>
+            <rect x="246" y="92" width="126" height="11" rx="5" fill="#f7e6cd" opacity=".85"/>
+            <rect x="252" y="106" width="76" height="30" rx="5" fill="#fdf6ea"/>
+            <circle cx="266" cy="121" r="7.5" fill="#e8b878"/>
+            <circle cx="286" cy="121" r="7.5" fill="#dda96c"/>
+            <circle cx="306" cy="121" r="7.5" fill="#e8b878"/>
+            <rect x="340" y="106" width="10" height="18" rx="4" fill="#9aa8ad"/>
+            <circle cx="345" cy="130" r="5" fill="#c3ccd0"/>
+
+            <!-- teaching table -->
+            <rect x="46" y="132" width="186" height="80" rx="18" fill="#c8a173"/>
+            <rect x="54" y="140" width="170" height="64" rx="14" fill="#e3c49f"/>
+            <rect x="70" y="154" width="58" height="36" rx="6" fill="#f6e8d2"/>
+            <circle cx="152" cy="172" r="9" fill="#f7ddb9"/>
+            <circle cx="152" cy="172" r="4" fill="#e8c795"/>
+            <circle cx="70" cy="112" r="12" fill="#c98f6a"/>
+            <circle cx="122" cy="112" r="12" fill="#c98f6a"/>
+            <circle cx="174" cy="112" r="12" fill="#c98f6a"/>
+            <circle cx="36" cy="172" r="11" fill="#c98f6a"/>
+            <circle cx="244" cy="172" r="11" fill="#c98f6a"/>
+
+            <!-- rug -->
+            <rect x="56" y="228" width="264" height="132" rx="26" fill="#efd9b8" opacity=".55"/>
+
+            <!-- apron pegboard -->
+            <rect x="348" y="226" width="44" height="108" rx="8" fill="#e7d3b6" stroke="#d8bf9d" stroke-width="1.4"/>
+            <circle cx="360" cy="242" r="2.4" fill="#b99a75"/>
+            <circle cx="380" cy="242" r="2.4" fill="#b99a75"/>
+            <path d="M354 242h12v34a6 6 0 0 1-12 0z" fill="#f6faf7"/>
+            <path d="M374 242h12v34a6 6 0 0 1-12 0z" fill="#f4f0e6"/>
+            <rect x="352" y="284" width="36" height="4" rx="2" fill="#d8bf9d"/>
+          </svg>
+          <div class="room-tag"><span class="dot"></span>베이킹 클래스실</div>
+          <div class="room-foot">
+            <div class="room-avs"></div>
+            <span class="memo-badge" hidden><b>0</b></span>
+          </div>
+        </div>
+
+        <!-- ============ 즉판업 택배·포장존 ============ -->
+        <div class="room" data-zone="packing" style="--z:#c9805a" role="button" tabindex="0" aria-label="즉판업 택배 포장존">
+          <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <pattern id="concP" width="60" height="60" patternUnits="userSpaceOnUse">
+                <rect width="60" height="60" fill="#eee5d6"/>
+                <circle cx="14" cy="18" r="1.5" fill="#e4d9c6"/>
+                <circle cx="42" cy="34" r="1.5" fill="#e4d9c6"/>
+                <circle cx="26" cy="48" r="1.5" fill="#e4d9c6"/>
+              </pattern>
+            </defs>
+            <rect width="400" height="400" fill="url(#concP)"/>
+            <rect width="400" height="62" fill="#f8f1e5"/>
+            <rect y="62" width="400" height="6" fill="#e9dcc7"/>
+
+            <!-- dispatch board -->
+            <rect x="132" y="12" width="140" height="42" rx="6" fill="#ffffff" stroke="#e3d4bd" stroke-width="2"/>
+            <rect x="146" y="22" width="54" height="4.5" rx="2.2" fill="#dcae7d"/>
+            <rect x="146" y="32" width="86" height="4.5" rx="2.2" fill="#e8ddcb"/>
+            <rect x="146" y="42" width="40" height="4.5" rx="2.2" fill="#e8ddcb"/>
+            <rect x="238" y="20" width="22" height="14" rx="3" fill="#f2e2c9"/>
+
+            <!-- packing tables -->
+            <rect x="18" y="90" width="170" height="64" rx="9" fill="#c49a6c" opacity=".3"/>
+            <rect x="18" y="88" width="170" height="64" rx="9" fill="#d9b183"/>
+            <rect x="24" y="94" width="158" height="52" rx="6" fill="#e8cba7"/>
+            <rect x="34" y="102" width="44" height="34" rx="4" fill="#f0dcc0"/>
+            <path d="M34 112h44" stroke="#e2c9a6" stroke-width="1.6"/>
+            <rect x="86" y="104" width="34" height="30" rx="4" fill="#efd9bb"/>
+            <rect x="128" y="106" width="22" height="26" rx="4" fill="#b9c2c6"/>
+            <path d="M139 116h8" stroke="#8894a0" stroke-width="2"/>
+
+            <rect x="206" y="90" width="176" height="64" rx="9" fill="#c49a6c" opacity=".3"/>
+            <rect x="206" y="88" width="176" height="64" rx="9" fill="#d9b183"/>
+            <rect x="212" y="94" width="164" height="52" rx="6" fill="#e8cba7"/>
+            <rect x="222" y="102" width="52" height="34" rx="4" fill="#f2e2c8"/>
+            <rect x="284" y="106" width="30" height="28" rx="4" fill="#c9d3d7"/>
+            <circle cx="299" cy="120" r="6" fill="#eef3f5"/>
+
+            <!-- walkway marking -->
+            <path d="M0 214H400" stroke="#e6cfa4" stroke-width="5" stroke-dasharray="18 16" opacity=".75"/>
+
+            <!-- box stacks -->
+            <rect x="316" y="224" width="44" height="38" rx="4" fill="#cd9f6d"/>
+            <path d="M316 236h44" stroke="#bd8f5e" stroke-width="2"/>
+            <rect x="306" y="266" width="52" height="46" rx="4" fill="#d8ae7d"/>
+            <path d="M306 280h52" stroke="#c79a68" stroke-width="2"/>
+            <rect x="334" y="260" width="44" height="40" rx="4" fill="#e0b886"/>
+            <path d="M334 273h44" stroke="#cb9f6d" stroke-width="2"/>
+
+            <!-- label printer cart -->
+            <rect x="22" y="270" width="88" height="64" rx="8" fill="#cfd8d8"/>
+            <rect x="30" y="278" width="72" height="34" rx="5" fill="#eef3f3"/>
+            <rect x="44" y="286" width="42" height="18" rx="3" fill="#b9c6c8"/>
+            <path d="M86 291h14v10H86z" fill="#ffffff"/>
+            <circle cx="44" cy="324" r="4" fill="#a9b6b8"/>
+            <circle cx="90" cy="324" r="4" fill="#a9b6b8"/>
+          </svg>
+          <div class="room-tag"><span class="dot"></span>즉판업 택배·포장존</div>
+          <div class="room-foot">
+            <div class="room-avs"></div>
+            <span class="memo-badge" hidden><b>0</b></span>
+          </div>
+        </div>
+
+        <!-- ============ 서무 업무실 ============ -->
+        <div class="room" data-zone="admin" style="--z:#8f9bd6" role="button" tabindex="0" aria-label="서무 업무실">
+          <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <pattern id="carpetA" width="28" height="28" patternUnits="userSpaceOnUse">
+                <rect width="28" height="28" fill="#ece6dc"/>
+                <circle cx="7" cy="7" r="1.2" fill="#e1d9cb"/>
+                <circle cx="21" cy="21" r="1.2" fill="#e1d9cb"/>
+              </pattern>
+            </defs>
+            <rect width="400" height="400" fill="url(#carpetA)"/>
+            <rect width="400" height="62" fill="#f8f3ea"/>
+            <rect y="62" width="400" height="6" fill="#e9e0d2"/>
+
+            <!-- calendar board -->
+            <rect x="116" y="12" width="168" height="44" rx="6" fill="#ffffff" stroke="#e4dbc9" stroke-width="2"/>
+            <path d="M128 24h144M128 34h144M128 44h144" stroke="#ece4d6" stroke-width="1.4"/>
+            <path d="M148 18v32M172 18v32M196 18v32M220 18v32M244 18v32" stroke="#ece4d6" stroke-width="1.4"/>
+            <rect x="150" y="26" width="18" height="6" rx="2" fill="#f0c48c"/>
+            <rect x="226" y="36" width="16" height="6" rx="2" fill="#c9dcf3"/>
+
+            <!-- desk 1 -->
+            <rect x="30" y="98" width="160" height="62" rx="9" fill="#c7b192" opacity=".3"/>
+            <rect x="30" y="96" width="160" height="62" rx="9" fill="#d8c3a6"/>
+            <rect x="36" y="102" width="148" height="50" rx="6" fill="#efe0c8"/>
+            <rect x="58" y="110" width="46" height="30" rx="3" fill="#4b5560"/>
+            <rect x="62" y="114" width="38" height="22" rx="2" fill="#8fb3d9"/>
+            <rect x="118" y="112" width="40" height="26" rx="3" fill="#4b5560"/>
+            <rect x="122" y="116" width="32" height="18" rx="2" fill="#a9c8e6"/>
+            <rect x="70" y="143" width="44" height="6" rx="2" fill="#dccbb0"/>
+            <circle cx="60" cy="174" r="13" fill="#c7b49a"/>
+            <circle cx="60" cy="174" r="6" fill="#d8c8b1"/>
+
+            <!-- desk 2 -->
+            <rect x="232" y="98" width="152" height="62" rx="9" fill="#c7b192" opacity=".3"/>
+            <rect x="232" y="96" width="152" height="62" rx="9" fill="#d8c3a6"/>
+            <rect x="238" y="102" width="140" height="50" rx="6" fill="#efe0c8"/>
+            <rect x="252" y="110" width="44" height="30" rx="3" fill="#4b5560"/>
+            <rect x="256" y="114" width="36" height="22" rx="2" fill="#9ec0dd"/>
+            <rect x="308" y="112" width="30" height="20" rx="2" fill="#8e9aa4"/>
+            <rect x="308" y="132" width="34" height="4" rx="2" fill="#c8d2d8"/>
+            <circle cx="266" cy="174" r="13" fill="#c7b49a"/>
+            <circle cx="266" cy="174" r="6" fill="#d8c8b1"/>
+
+            <!-- shelf with binders -->
+            <rect x="22" y="252" width="70" height="100" rx="7" fill="#d9c6ab"/>
+            <rect x="28" y="258" width="58" height="42" rx="4" fill="#f9f2e6"/>
+            <rect x="33" y="264" width="8" height="30" rx="2" fill="#c98f7a"/>
+            <rect x="44" y="264" width="8" height="30" rx="2" fill="#8fa9c4"/>
+            <rect x="55" y="264" width="8" height="30" rx="2" fill="#b3c49a"/>
+            <rect x="66" y="264" width="8" height="30" rx="2" fill="#d8b87a"/>
+            <rect x="28" y="306" width="58" height="38" rx="4" fill="#e7d8c2"/>
+
+            <!-- plant -->
+            <circle cx="366" cy="312" r="16" fill="#cfe0c4"/>
+            <circle cx="350" cy="330" r="12" fill="#bfd5b3"/>
+            <circle cx="380" cy="330" r="11" fill="#c9dcbc"/>
+            <rect x="352" y="336" width="26" height="22" rx="5" fill="#d9b08c"/>
+
+            <!-- mug -->
+            <circle cx="176" cy="120" r="6" fill="#ffffff" stroke="#e0d3bf" stroke-width="1.2"/>
+          </svg>
+          <div class="room-tag"><span class="dot"></span>서무 업무실</div>
+          <div class="room-foot">
+            <div class="room-avs"></div>
+            <span class="memo-badge" hidden><b>0</b></span>
+          </div>
+        </div>
+
+        <div class="critters" id="critters"></div>
+      </div>
+
+      <p class="stage-hint">구역을 콕 누르면 내 피클이 그 자리로 걸어가요 · 위 탭으로는 둘러보기만</p>
+
+      <form class="quickbar" id="statusForm" autocomplete="off">
+        <span class="qb-av" id="qbAvatar">ㅂ</span>
+        <input id="statusInput" maxlength="60" placeholder="내 상태 · 말풍선에 뜰 한 줄" aria-label="내 상태 메시지">
+        <button class="btn btn-sm btn-primary" type="submit">저장</button>
+      </form>
+
+      <p class="mode-note" id="modeNote">로컬 미리보기 모드 (실시간 DB 연결 대기)</p>
+    </section>
+
+    <aside class="panel">
+      <div class="tabs" id="tabs" role="tablist" aria-label="구역 선택">
+        <button class="tab on" data-tab="all" role="tab" aria-selected="true" type="button">전체</button>
+        <button class="tab" data-tab="haccp" role="tab" aria-selected="false" type="button"><i style="--z:#48ae9f"></i>생산</button>
+        <button class="tab" data-tab="class" role="tab" aria-selected="false" type="button"><i style="--z:#e2a94b"></i>클래스</button>
+        <button class="tab" data-tab="packing" role="tab" aria-selected="false" type="button"><i style="--z:#c9805a"></i>택배</button>
+        <button class="tab" data-tab="admin" role="tab" aria-selected="false" type="button"><i style="--z:#8f9bd6"></i>서무</button>
+      </div>
+      <div class="panel-body" id="panelBody"></div>
+      <form class="note-form" id="noteForm" autocomplete="off">
+        <div class="nf-head">
+          <select id="noteZone" aria-label="메모 구역"></select>
+          <span class="lbl">에 메모 남기기</span>
+        </div>
+        <textarea id="noteText" rows="2" maxlength="200" placeholder="예: 오븐 180℃ 예열 확인 · 창업반 2주차 자료 마무리"></textarea>
+        <div class="nf-foot">
+          <span class="cnt" id="noteCount">0/200</span>
+          <button class="btn btn-sm btn-primary" type="submit">남기기</button>
+        </div>
+      </form>
+    </aside>
+  </div>
+
+  <p class="footnote" id="footnote">빵빵이네 합동 비서실 · 피클</p>
+</main>
+
+<!-- ================= 초대 모달 ================= -->
+<div class="modal" id="inviteModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="invTitle">
+    <button class="x" type="button" data-close aria-label="닫기">✕</button>
+    <h2 id="invTitle">피클 초대하기</h2>
+    <p class="lead">같은 링크로 들어오면 같은 비서실에 모여요. 받는 분의 피클이 이 방에 게스트로 들어와서, 자기 자리에서 일하고 말풍선으로 상태를 보여줘요.</p>
+
+    <label class="fld">받는 분 피클 이름
+      <input id="invName" maxlength="12" placeholder="예: 콩이" value="">
+    </label>
+
+    <label class="fld">자음
+      <select id="invConsonant"></select>
+    </label>
+
+    <div class="fld">
+      <span>색</span>
+      <div class="swatches" id="invColors"></div>
+    </div>
+
+    <div class="fld">
+      <span>초대 링크</span>
+      <div class="linkbox"><input id="invLink" readonly></div>
+    </div>
+
+    <div class="row">
+      <button class="btn btn-primary" type="button" id="copyLink">링크 복사</button>
+      <button class="btn" type="button" id="shareLink">공유하기</button>
+    </div>
+
+    <p class="hintbox" id="invNote">방 코드 <b id="invRoom">bbangine</b> · 지금은 로컬 미리보기 모드예요. Firebase 실시간 DB를 연결하면 이 링크로 들어온 피클들이 실제로 같은 방에서 함께 움직입니다.</p>
+  </div>
+</div>
+
+<!-- ================= 내 피클 모달 ================= -->
+<div class="modal" id="profileModal" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="profTitle">
+    <button class="x" type="button" data-close aria-label="닫기">✕</button>
+    <h2 id="profTitle">내 피클</h2>
+    <div class="preview">
+      <span class="mini" id="profPreview">ㅂ</span>
+      <div style="min-width:0">
+        <b id="profNamePrev">빵빵이</b>
+        <p class="muted small" id="profOwnerPrev">@kimsuhyeon382</p>
+      </div>
+    </div>
+
+    <label class="fld">이름
+      <input id="pfName" maxlength="12" placeholder="피클 이름">
+    </label>
+
+    <label class="fld">소유자
+      <input id="pfOwner" maxlength="24" placeholder="@핸들 또는 이름">
+    </label>
+
+    <div class="fld">
+      <span>자음</span>
+      <div class="jamo-grid" id="jamoGrid"></div>
+    </div>
+
+    <div class="fld">
+      <span>색</span>
+      <div class="swatches" id="colorSwatches"></div>
+    </div>
+
+    <label class="fld">상태 말풍선
+      <input id="pfStatus" maxlength="60" placeholder="예: 창업반 2주차 정리 중">
+    </label>
+
+    <label class="switch">
+      <input type="checkbox" id="pfWander">
+      <span>가만히 두면 네 구역을 자동으로 돌아다녀요</span>
+    </label>
+
+    <div class="row">
+      <button class="btn" type="button" data-close>취소</button>
+      <button class="btn btn-primary" type="button" id="pfSave">저장</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast" role="status" aria-live="polite"></div>
+<noscript><p style="text-align:center;padding:20px">이 비서실은 자바스크립트가 필요해요.</p></noscript>
+
+<script>
+/* =========================================================================
+   빵빵이네 합동 비서실 — app script
+   -------------------------------------------------------------------------
+   1) 설정 (FIREBASE_CONFIG)
+   2) 상수 · 구역 정의
+   3) 상태 · 내 피클 신원
+   4) 동기화 계층 (로컬 모드 / Firebase Realtime Database)
+   5) 렌더링 (방 · 피클 · 패널)
+   6) 이동 · 상호작용
+   7) 초기화
+   ========================================================================= */
+(function () {
+  'use strict';
+
+  /* ============ 1. Firebase 설정 ============
+     아래 객체에 Firebase 프로젝트 설정을 넣으면 자동으로 실시간 동기화로 전환됩니다.
+     databaseURL 이 비어 있으면 로컬 미리보기 모드로 동작합니다. */
+  var FIREBASE_CONFIG = {
+    apiKey: "",
+    authDomain: "",
+    databaseURL: "",      // 예: "https://pickle-office-default-rtdb.asia-southeast1.firebasedatabase.app"
+    projectId: "",
+    storageBucket: "",
+    messagingSenderId: "",
+    appId: ""
+  };
+  var DB_ROOT = "pickleOffice";
+  var SDK_VERSION = "10.12.2";
+
+  /* ============ 2. 상수 · 구역 ============ */
+  var ZONES = [
+    {
+      id: "haccp", name: "해썹 생산실", short: "생산", accent: "#48ae9f",
+      desc: "위생·온도 기록과 배합, 오븐 작업을 하는 구역이에요. HACCP 일지와 냉각까지 여기서 챙겨요.",
+      chips: ["온도 기록", "배합", "오븐", "냉각"],
+      area: { x0: 10, x1: 44, y0: 26, y1: 41 }
+    },
+    {
+      id: "class", name: "베이킹 클래스실", short: "클래스", accent: "#e2a94b",
+      desc: "창업반·컨설팅반 수업과 시연이 열리는 구역이에요. 커리큘럼과 자료는 여기에 모아 둬요.",
+      chips: ["창업반", "컨설팅반", "시연", "자료"],
+      area: { x0: 56, x1: 92, y0: 27, y1: 42 }
+    },
+    {
+      id: "packing", name: "즉판업 택배·포장존", short: "택배", accent: "#c9805a",
+      desc: "주문 확인부터 포장·송장까지, 택배가 나가는 구역이에요. 오늘 나갈 주문을 여기 적어 둬요.",
+      chips: ["주문", "포장", "송장", "출고"],
+      area: { x0: 10, x1: 44, y0: 72, y1: 83 }
+    },
+    {
+      id: "admin", name: "서무 업무실", short: "서무", accent: "#8f9bd6",
+      desc: "정산·일정·공지 같은 서류 일을 보는 구역이에요. 홍보 글과 상세페이지도 여기서 시작해요.",
+      chips: ["정산", "일정", "공지", "홍보"],
+      area: { x0: 56, x1: 92, y0: 73, y1: 84 }
+    }
+  ];
+  var ZONE_MAP = {};
+  ZONES.forEach(function (z) { ZONE_MAP[z.id] = z; });
+  var ZONE_IDS = ZONES.map(function (z) { return z.id; });
+
+  var CONSONANTS = ["ㄱ", "ㄴ", "ㄷ", "ㄹ", "ㅁ", "ㅂ", "ㅅ", "ㅇ", "ㅈ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+  var COLORS = [
+    { name: "블루", hex: "#7FB2FF" },
+    { name: "코랄", hex: "#FF9E8A" },
+    { name: "버터", hex: "#FFC96B" },
+    { name: "민트", hex: "#8FD3A8" },
+    { name: "라벤더", hex: "#C3A6F0" },
+    { name: "핑크", hex: "#F49BC4" },
+    { name: "틸", hex: "#8FD7D3" },
+    { name: "라떼", hex: "#C9AE93" }
+  ];
+  var DEFAULT_ME = {
+    name: "빵빵이", owner: "@kimsuhyeon382", consonant: "ㅂ", color: "#7FB2FF",
+    zone: "admin", status: "비서실 세팅 중", role: "host"
+  };
+  var PRESENCE_TTL = 200000; // 200초 지난 흔적은 숨김
+  var ME_KEY = "pickleOffice:me";
+  var SAMPLE_DEFS = [
+    { id: "sample-mong", name: "몽이", owner: "@mong", consonant: "ㅁ", color: "#FFC96B", zone: "class" },
+    { id: "sample-ori", name: "오리", owner: "@ori", consonant: "ㅇ", color: "#8FD3A8", zone: "packing" },
+    { id: "sample-gureum", name: "구름", owner: "@gureum", consonant: "ㄱ", color: "#C3A6F0", zone: "haccp" }
+  ];
+  var SAMPLE_TALK = {
+    haccp: ["오븐 예열 온도 맞추는 중", "반죽 배합 기록 중", "냉각대 정리 중"],
+    class: ["창업반 2주차 자료 정리 중", "컨설팅반 커리큘럼 짜는 중", "시연 순서 확인 중"],
+    packing: ["송장 뽑는 중", "포장 박스 채우는 중", "출고 목록 확인 중"],
+    admin: ["정산표 맞춰보는 중", "공지 문구 다듬는 중", "일정 정리 중"]
+  };
+
+  /* ============ 3. 유틸 ============ */
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $$(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function uid() { return "p" + Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-3); }
+  function normColor(v) {
+    if (!v) return COLORS[0].hex;
+    var s = String(v).trim();
+    if (/^[0-9a-fA-F]{6}$/.test(s)) s = "#" + s;
+    return /^#[0-9a-fA-F]{6}$/.test(s) ? s.toUpperCase() : COLORS[0].hex;
+  }
+  function timeAgo(ts) {
+    if (!ts) return "";
+    var d = Date.now() - ts;
+    if (d < 45000) return "방금";
+    var m = Math.floor(d / 60000);
+    if (m < 60) return m + "분 전";
+    var h = Math.floor(m / 60);
+    if (h < 24) return h + "시간 전";
+    var dd = Math.floor(h / 24);
+    if (dd < 7) return dd + "일 전";
+    try { return new Date(ts).toLocaleDateString("ko-KR", { month: "numeric", day: "numeric" }); }
+    catch (e) { return ""; }
+  }
+  function todayLine() {
+    try {
+      return new Date().toLocaleDateString("ko-KR", { month: "long", day: "numeric", weekday: "long" });
+    } catch (e) { return ""; }
+  }
+
+  /* ============ 4. 신원 · 상태 ============ */
+  var params = new URLSearchParams(location.search);
+
+  function sanitizeRoom(v) {
+    var s = String(v || "").toLowerCase().replace(/[^a-z0-9_-]/g, "").slice(0, 24);
+    return s || "bbangine";
+  }
+
+  var S = {
+    room: "bbangine",
+    me: null,
+    myPos: { x: 74, y: 78 },
+    pickles: {},
+    notes: [],
+    tab: "all",
+    live: false,
+    cloudOK: false,
+    wander: false,
+    hideSamples: false,
+    started: false
+  };
+
+  function loadIdentity() {
+    var stored = {};
+    try { stored = JSON.parse(localStorage.getItem(ME_KEY) || "{}") || {}; } catch (e) { stored = {}; }
+    var me = {};
+    var k;
+    for (k in DEFAULT_ME) if (Object.prototype.hasOwnProperty.call(DEFAULT_ME, k)) me[k] = DEFAULT_ME[k];
+    for (k in stored) if (Object.prototype.hasOwnProperty.call(stored, k) && stored[k] != null) me[k] = stored[k];
+
+    me.id = me.id || uid();
+    me.color = normColor(me.color);
+    if (CONSONANTS.indexOf(me.consonant) < 0) me.consonant = "ㅂ";
+    if (ZONE_IDS.indexOf(me.zone) < 0) me.zone = "admin";
+
+    var fromLink = false;
+    if (params.get("name")) { me.name = params.get("name").slice(0, 12); fromLink = true; }
+    if (params.get("consonant") && CONSONANTS.indexOf(params.get("consonant").slice(0, 1)) >= 0) {
+      me.consonant = params.get("consonant").slice(0, 1); fromLink = true;
+    }
+    if (params.get("color")) { me.color = normColor(params.get("color")); fromLink = true; }
+    if (params.get("role")) { me.role = params.get("role") === "guest" ? "guest" : "host"; fromLink = true; }
+    if (params.get("status")) me.status = params.get("status").slice(0, 60);
+    if (params.get("zone") && ZONE_MAP[params.get("zone")]) me.zone = params.get("zone");
+    if (params.get("name") && !stored.id) me.id = uid();
+
+    S.room = sanitizeRoom(params.get("room") || stored.room || "bbangine");
+    me.room = S.room;
+    return { me: me, fromLink: fromLink };
+  }
+
+  function saveMe() {
+    try { localStorage.setItem(ME_KEY, JSON.stringify(S.me)); } catch (e) { /* ignore */ }
+  }
+
+  /* ============ 5. 저장소 · 동기화 ============ */
+  function LSKey(suffix) { return "pickleOffice:" + S.room + ":" + suffix; }
+  function lsGet(suffix, fallback) {
+    try {
+      var raw = localStorage.getItem(LSKey(suffix));
+      return raw ? JSON.parse(raw) : fallback;
+    } catch (e) { return fallback; }
+  }
+  function lsSet(suffix, value) {
+    try { localStorage.setItem(LSKey(suffix), JSON.stringify(value)); } catch (e) { /* ignore */ }
+  }
+
+  var bc = null;
+  function initBroadcast() {
+    try {
+      if ("BroadcastChannel" in window) {
+        bc = new BroadcastChannel("pickleOffice:" + S.room);
+        bc.onmessage = function () { if (!S.cloudOK) refreshLocal(); };
+      }
+    } catch (e) { bc = null; }
+    window.addEventListener("storage", function (e) {
+      if (S.cloudOK) return;
+      if (e.key && e.key.indexOf("pickleOffice:" + S.room + ":") === 0) refreshLocal();
+    });
+  }
+  function broadcast() {
+    try { if (bc) bc.postMessage({ t: "sync", at: Date.now() }); } catch (e) { /* ignore */ }
+  }
+
+  function myPayload() {
+    var m = S.me;
+    return {
+      id: m.id, name: m.name, owner: m.owner, consonant: m.consonant, color: m.color,
+      zone: m.zone, status: m.status, role: m.role, at: Date.now()
+    };
+  }
+
+  function pushMe() {
+    if (S.cloudOK && cloudRefs) {
+      try { cloudRefs.meRef.update(myPayload()); } catch (e) { /* ignore */ }
+      return;
+    }
+    var all = lsGet("presence", {});
+    all[S.me.id] = myPayload();
+    lsSet("presence", all);
+    broadcast();
+  }
+
+  function readLocalPresence() {
+    var raw = lsGet("presence", {});
+    var now = Date.now();
+    var out = {};
+    for (var id in raw) {
+      if (!Object.prototype.hasOwnProperty.call(raw, id)) continue;
+      var p = raw[id];
+      if (!p) continue;
+      if (p.sample) { out[id] = p; continue; }
+      if (now - (p.at || 0) > PRESENCE_TTL) continue;
+      out[id] = p;
+    }
+    return out;
+  }
+
+  function refreshLocal() {
+    if (S.cloudOK) return;
+    S.pickles = readLocalPresence();
+    S.notes = lsGet("notes", []);
+    addSamples();
+    S.pickles[S.me.id] = myPayload(); // 내 상태는 항상 현재 값
+    renderAll();
+  }
+
+  function ensureMine() {
+    if (!S.pickles[S.me.id]) S.pickles[S.me.id] = myPayload();
+  }
+
+  /* --- 샘플 피클 (미리보기 전용) --- */
+  var sampleState = {};
+  function addSamples() {
+    if (S.hideSamples) return;
+    SAMPLE_DEFS.forEach(function (def) {
+      var st = sampleState[def.id] || {};
+      var base = {
+        id: def.id, name: def.name, owner: def.owner, consonant: def.consonant,
+        color: def.color, zone: def.zone, role: "guest", sample: true
+      };
+      base.zone = st.zone || base.zone;
+      base.status = st.status || (SAMPLE_TALK[base.zone] || ["일하는 중"])[0];
+      S.pickles[def.id] = base;
+    });
+  }
+
+  /* --- Firebase Realtime Database --- */
+  var cloudRefs = null;
+  function loadScript(src) {
+    return new Promise(function (resolve, reject) {
+      var s = document.createElement("script");
+      s.src = src; s.async = true;
+      s.onload = function () { resolve(); };
+      s.onerror = function () { reject(new Error("script load failed: " + src)); };
+      document.head.appendChild(s);
+    });
+  }
+
+  async function startCloud() {
+    await loadScript("https://www.gstatic.com/firebasejs/" + SDK_VERSION + "/firebase-app-compat.js");
+    await loadScript("https://www.gstatic.com/firebasejs/" + SDK_VERSION + "/firebase-database-compat.js");
+    if (!window.firebase) throw new Error("firebase sdk unavailable");
+    if (!firebase.apps || !firebase.apps.length) firebase.initializeApp(FIREBASE_CONFIG);
+    var db = firebase.database();
+    var base = DB_ROOT + "/" + S.room;
+    var pRef = db.ref(base + "/presence");
+    var nRef = db.ref(base + "/notes");
+    var meRef = pRef.child(S.me.id);
+
+    await meRef.set(myPayload());
+    meRef.onDisconnect().remove();
+
+    setInterval(function () {
+      if (!S.cloudOK) return;
+      try { meRef.update({ at: Date.now() }); } catch (e) { /* ignore */ }
+    }, 25000);
+
+    pRef.on("value", function (snap) {
+      S.pickles = snap.val() || {};
+      ensureMine();
+      renderAll();
+    });
+    nRef.on("value", function (snap) {
+      var v = snap.val() || {};
+      var arr = [];
+      for (var k in v) {
+        if (!Object.prototype.hasOwnProperty.call(v, k)) continue;
+        var n = v[k] || {};
+        n.id = k;
+        arr.push(n);
+      }
+      S.notes = arr;
+      renderAll();
+    });
+
+    cloudRefs = { db: db, base: base, pRef: pRef, nRef: nRef, meRef: meRef };
+    S.cloudOK = true;
+
+    // 호스트가 처음 연 방이면 시작 메모를 깔아 둡니다.
+    nRef.once("value").then(function (snap) {
+      if (!snap.exists() && S.me.role === "host") seedStarters(true);
+    }).catch(function () { /* ignore */ });
+  }
+
+  /* --- 메모 --- */
+  function starterNotes() {
+    return [
+      { zone: "admin", text: "올리브영 홍보 게시글 올리기" },
+      { zone: "admin", text: "올리브영 담당자에게 사진 등록·진행 방식 문의" },
+      { zone: "class", text: "택배 창업반 1주차 마무리 + 2주차 준비" },
+      { zone: "class", text: "비건 디저트 컨설팅반 자료 만들기" },
+      { zone: "packing", text: "만모스 맛 콜라보 마켓 공지글 + 상세페이지" }
+    ];
+  }
+
+  function seedStarters(cloud) {
+    var now = Date.now();
+    var items = starterNotes();
+    if (cloud && S.cloudOK && cloudRefs) {
+      items.forEach(function (it, i) {
+        var patch = {};
+        patch["n" + i] = {
+          text: it.text, zone: it.zone, author: "빵빵이", authorId: S.me.id,
+          at: now + i, done: false
+        };
+        cloudRefs.nRef.update(patch);
+        patch = null;
+      });
+      return;
+    }
+    var list = lsGet("notes", []);
+    if (list.length) return;
+    items.forEach(function (it, i) {
+      list.push({ id: uid() + i, text: it.text, zone: it.zone, author: "빵빵이", authorId: S.me.id, at: now + i, done: false });
+    });
+    lsSet("notes", list);
+  }
+
+  function addNote(zoneId, text) {
+    var body = String(text || "").trim().slice(0, 200);
+    if (!body) { toast("메모 내용을 먼저 적어 주세요"); return false; }
+    if (!ZONE_MAP[zoneId]) zoneId = "admin";
+    if (S.cloudOK && cloudRefs) {
+      try {
+        cloudRefs.nRef.push({ text: body, zone: zoneId, author: S.me.name, authorId: S.me.id, at: Date.now(), done: false });
+      } catch (e) { toast("메모를 남기지 못했어요"); return false; }
+    } else {
+      var list = lsGet("notes", []);
+      list.push({ id: uid(), text: body, zone: zoneId, author: S.me.name, authorId: S.me.id, at: Date.now(), done: false });
+      lsSet("notes", list);
+      broadcast();
+      refreshLocal();
+    }
+    toast(ZONE_MAP[zoneId].name + "에 메모를 남겼어요");
+    return true;
+  }
+
+  function toggleNote(id) {
+    var n = null;
+    for (var i = 0; i < S.notes.length; i++) if (S.notes[i].id === id) n = S.notes[i];
+    if (!n) return;
+    var next = !n.done;
+    if (S.cloudOK && cloudRefs) {
+      try { cloudRefs.nRef.child(id).update({ done: next }); } catch (e) { /* ignore */ }
+    } else {
+      var list = lsGet("notes", []);
+      for (var j = 0; j < list.length; j++) if (list[j].id === id) list[j].done = next;
+      lsSet("notes", list);
+      broadcast();
+    }
+    n.done = next;
+    renderAll();
+  }
+
+  function deleteNote(id) {
+    if (S.cloudOK && cloudRefs) {
+      try { cloudRefs.nRef.child(id).remove(); } catch (e) { /* ignore */ }
+    } else {
+      var list = lsGet("notes", []).filter(function (n) { return n.id !== id; });
+      lsSet("notes", list);
+      broadcast();
+      refreshLocal();
+    }
+    S.notes = S.notes.filter(function (n) { return n.id !== id; });
+    renderAll();
+    toast("메모를 지웠어요");
+  }
+
+  /* ============ 6. 렌더링 ============ */
+  var critEls = {};
+  var stageEl, critterLayer, panelBody;
+
+  function allPickles() {
+    var out = [];
+    for (var id in S.pickles) {
+      if (!Object.prototype.hasOwnProperty.call(S.pickles, id)) continue;
+      var p = S.pickles[id];
+      if (!p || !p.zone || !ZONE_MAP[p.zone]) continue;
+      if (!p.sample && id !== S.me.id && Date.now() - (p.at || 0) > PRESENCE_TTL * 2) continue;
+      out.push(p);
+    }
+    out.sort(function (a, b) {
+      if (a.id === S.me.id) return -1;
+      if (b.id === S.me.id) return 1;
+      return String(a.name || "").localeCompare(String(b.name || ""));
+    });
+    return out;
+  }
+
+  function zoneOfPoint(pt) {
+    if (!pt) return null;
+    if (pt.x < 0 || pt.x > 100 || pt.y < 0 || pt.y > 100) return null;
+    var col = pt.x < 50 ? 0 : 1;
+    var row = pt.y < 50 ? 0 : 1;
+    return ZONE_IDS[row * 2 + col];
+  }
+
+  function clampToZone(zoneId, pt) {
+    var a = ZONE_MAP[zoneId].area;
+    return { x: clamp(pt.x, a.x0 + 1, a.x1 - 1), y: clamp(pt.y, a.y0 + 1, a.y1 - 1) };
+  }
+
+  function slotPos(zoneId, index, total) {
+    var a = ZONE_MAP[zoneId].area;
+    var n = Math.max(total, 1);
+    var t = (index + 1) / (n + 1);
+    var x = a.x0 + (a.x1 - a.x0) * t;
+    var y = (a.y0 + a.y1) / 2 + (index % 2 === 0 ? -1.2 : 1.8);
+    return { x: clamp(x, a.x0 + 1, a.x1 - 1), y: clamp(y, a.y0 + 1, a.y1 - 1) };
+  }
+
+  var BODY_SVG =
+    '<svg viewBox="0 0 64 66" aria-hidden="true">' +
+      '<ellipse cx="32" cy="62" rx="14" ry="3.6" fill="rgba(70,52,30,.18)"/>' +
+      '<g class="bob">' +
+        '<path d="M32 5c13.4 0 24 9.7 24 21.8 0 6.2-2.7 11.8-7 15.8-3.2 3-7.4 4.9-11.8 5.5-1.7.2-3.4.4-5.2.4s-3.5-.2-5.2-.4c-4.4-.6-8.6-2.5-11.8-5.5-4.3-4-7-9.6-7-15.8C8 14.7 18.6 5 32 5z" fill="var(--c)" stroke="rgba(60,44,28,.08)" stroke-width="1"/>' +
+        '<ellipse cx="23" cy="15" rx="6.5" ry="4.6" fill="#ffffff" opacity=".38"/>' +
+        '<text class="jamo-mark" x="32" y="52" text-anchor="middle" font-size="21" font-weight="800" fill="#ffffff" opacity=".58" font-family="inherit">ㅂ</text>' +
+        '<g class="eyes">' +
+          '<ellipse cx="23.6" cy="25" rx="3.1" ry="3.7" fill="#2e2b33"/>' +
+          '<ellipse cx="40.4" cy="25" rx="3.1" ry="3.7" fill="#2e2b33"/>' +
+          '<circle cx="22.4" cy="23.7" r="1.05" fill="#ffffff"/>' +
+          '<circle cx="39.2" cy="23.7" r="1.05" fill="#ffffff"/>' +
+        '</g>' +
+        '<path d="M29.4 32.6q2.6 2.3 5.2 0" stroke="#2e2b33" stroke-width="1.6" fill="none" stroke-linecap="round" opacity=".75"/>' +
+      '</g>' +
+    '</svg>';
+
+  function createCritter(p) {
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "critter";
+    btn.setAttribute("data-id", p.id);
+    btn.innerHTML =
+      '<span class="bubble"></span>' +
+      '<span class="body">' + BODY_SVG + '</span>' +
+      '<span class="tag"><span class="jamo"></span><span class="nm"></span></span>';
+    btn.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      onCritterClick(p.id);
+    });
+    critterLayer.appendChild(btn);
+    critEls[p.id] = btn;
+    return btn;
+  }
+
+  function updateCritter(btn, p) {
+    btn.style.setProperty("--c", normColor(p.color));
+    btn.classList.toggle("me", p.id === S.me.id);
+    var jamo = btn.querySelector(".jamo");
+    var nm = btn.querySelector(".nm");
+    var mark = btn.querySelector(".jamo-mark");
+    var text = p.consonant || "ㅂ";
+    if (jamo.textContent !== text) jamo.textContent = text;
+    if (mark.textContent !== text) mark.textContent = text;
+    var name = p.name || "피클";
+    if (nm.textContent !== name) nm.textContent = name;
+    var bubble = btn.querySelector(".bubble");
+    var show = (p.id === S.me.id || S.tab === p.zone) && !!p.status;
+    if (bubble.textContent !== (p.status || "")) bubble.textContent = p.status || "";
+    bubble.classList.toggle("on", !!show);
+    btn.setAttribute("aria-label",
+      (p.name || "피클") + (p.id === S.me.id ? " (나)" : "") + " · " +
+      (ZONE_MAP[p.zone] ? ZONE_MAP[p.zone].name : "") + " · " + (p.status || "상태 없음"));
+  }
+
+  function place(btn, pt, animate) {
+    var last = btn.__last;
+    var moved = !last || Math.abs(last.x - pt.x) > 0.25 || Math.abs(last.y - pt.y) > 0.25;
+    if (!animate) btn.classList.add("no-anim");
+    btn.style.left = pt.x.toFixed(2) + "%";
+    btn.style.top = pt.y.toFixed(2) + "%";
+    btn.style.zIndex = String(100 + Math.round(pt.y * 3));
+    btn.__last = { x: pt.x, y: pt.y };
+    if (!animate) {
+      requestAnimationFrame(function () { btn.classList.remove("no-anim"); });
+      return;
+    }
+    if (moved) {
+      btn.classList.add("walking");
+      clearTimeout(btn.__wt);
+      btn.__wt = setTimeout(function () { btn.classList.remove("walking"); }, 820);
+    }
+  }
+
+  function renderCritters() {
+    var list = allPickles();
+    var seen = {};
+    var i;
+    for (i = 0; i < list.length; i++) seen[list[i].id] = true;
+
+    for (var id in critEls) {
+      if (!Object.prototype.hasOwnProperty.call(critEls, id)) continue;
+      if (!seen[id]) {
+        critEls[id].remove();
+        delete critEls[id];
+      }
+    }
+
+    var byZone = {};
+    list.forEach(function (p) {
+      if (!byZone[p.zone]) byZone[p.zone] = [];
+      byZone[p.zone].push(p);
+    });
+
+    Object.keys(byZone).forEach(function (zid) {
+      byZone[zid].forEach(function (p, idx) {
+        var btn = critEls[p.id] || createCritter(p);
+        updateCritter(btn, p);
+        if (p.id === S.me.id) return; // 내 위치는 이동 로직이 관리
+        place(btn, slotPos(zid, idx, byZone[zid].length), true);
+      });
+    });
+
+    // 내 피클
+    var mine = critEls[S.me.id];
+    if (mine) updateCritter(mine, S.pickles[S.me.id] || S.me);
+  }
+
+  function renderRooms() {
+    var list = allPickles();
+    ZONES.forEach(function (z) {
+      var roomEl = document.querySelector('.room[data-zone="' + z.id + '"]');
+      if (!roomEl) return;
+      var here = list.filter(function (p) { return p.zone === z.id; });
+      var open = S.notes.filter(function (n) { return n.zone === z.id && !n.done; }).length;
+      roomEl.classList.toggle("active", S.tab === z.id);
+      roomEl.setAttribute("aria-label", z.name + " · 피클 " + here.length + " · 열린 일 " + open);
+      var avs = roomEl.querySelector(".room-avs");
+      var html = "";
+      here.slice(0, 3).forEach(function (p) {
+        html += '<span class="mini" style="--c:' + normColor(p.color) + '">' + esc(p.consonant || "·") + "</span>";
+      });
+      if (here.length > 3) html += '<span class="mini more" style="--c:#b9ad9c">+' + (here.length - 3) + "</span>";
+      avs.innerHTML = html;
+
+      var badge = roomEl.querySelector(".memo-badge");
+      if (open > 0) {
+        badge.hidden = false;
+        badge.innerHTML = "메모 <b>" + open + "</b>";
+      } else {
+        badge.hidden = true;
+      }
+    });
+  }
+
+  function personRow(p) {
+    var z = ZONE_MAP[p.zone] || { short: "?", accent: "#999" };
+    var chips = "";
+    if (p.id === S.me.id) chips += '<span class="chip me">나</span>';
+    if (p.sample) chips += '<span class="chip sample">샘플</span>';
+    return '<div class="person" data-person="' + esc(p.id) + '" role="button" tabindex="0">' +
+      '<span class="mini" style="--c:' + normColor(p.color) + '">' + esc(p.consonant || "·") + "</span>" +
+      '<div class="p-meta">' +
+        '<div class="p-name">' + esc(p.name || "피클") + chips + "</div>" +
+        '<div class="p-status">' + esc(p.status || "상태 없음") + "</div>" +
+      "</div>" +
+      '<span class="zone-chip" style="border-color:' + z.accent + "33;color:" + z.accent + '">' + esc(z.short) + "</span>" +
+    "</div>";
+  }
+
+  function noteItems(list, showZone) {
+    if (!list.length) {
+      return '<li class="empty">아직 메모가 없어요.<br>아래에서 이 구역의 첫 메모를 남겨보세요.</li>';
+    }
+    var sorted = list.slice().sort(function (a, b) {
+      var ad = a.done ? 1 : 0, bd = b.done ? 1 : 0;
+      if (ad !== bd) return ad - bd;
+      return (b.at || 0) - (a.at || 0);
+    });
+    return sorted.map(function (n) {
+      var z = ZONE_MAP[n.zone] || { short: "?", accent: "#999" };
+      var canDel = n.authorId === S.me.id || S.me.role === "host";
+      var zchip = showZone
+        ? '<span class="zone-chip" style="border-color:' + z.accent + "33;color:" + z.accent + '">' + esc(z.short) + "</span>"
+        : "";
+      return '<li class="note' + (n.done ? " done" : "") + '">' +
+        '<button class="check" type="button" data-check="' + esc(n.id) + '" aria-pressed="' + (n.done ? "true" : "false") + '" aria-label="' + (n.done ? "완료 취소" : "완료로 표시") + '">' + (n.done ? "✓" : "") + "</button>" +
+        '<div class="n-body"><p>' + esc(n.text) + "</p>" +
+          '<div class="n-meta">' + zchip + "<span>" + esc(n.author || "피클") + "</span><span>·</span><span>" + timeAgo(n.at) + "</span></div>" +
+        "</div>" +
+        (canDel ? '<button class="del" type="button" data-del="' + esc(n.id) + '" aria-label="메모 삭제">×</button>' : "") +
+      "</li>";
+    }).join("");
+  }
+
+  function allView() {
+    var people = allPickles();
+    var open = S.notes.filter(function (n) { return !n.done; });
+    var done = S.notes.length - open.length;
+    var head =
+      '<div class="p-head">' +
+        "<h2>오늘의 비서실</h2>" +
+        '<p class="muted">' + esc(todayLine()) + " · 열린 일 " + open.length + "개" + (done ? " · 끝낸 일 " + done + "개" : "") + "</p>" +
+      "</div>";
+    var roster = '<div class="people">' + (people.length ? people.map(personRow).join("") : '<p class="empty">아직 아무도 없어요.</p>') + "</div>";
+    var notes = '<ul class="notes">' + noteItems(S.notes, true) + "</ul>";
+    return head + '<div class="sec">지금 방에 있는 피클 <span class="cnt">' + people.length + "</span></div>" + roster +
+      '<div class="sec">구역별 일 <span class="cnt">' + open.length + "</span></div>" + notes;
+  }
+
+  function zoneView(z) {
+    var people = allPickles().filter(function (p) { return p.zone === z.id; });
+    var notes = S.notes.filter(function (n) { return n.zone === z.id; });
+    var open = notes.filter(function (n) { return !n.done; }).length;
+    var chips = z.chips.map(function (c) { return '<span class="chip-sm">' + esc(c) + "</span>"; }).join("");
+    return '<div class="p-head">' +
+        '<div class="zone-title"><span class="zdot" style="--z:' + z.accent + '"></span><h2>' + esc(z.name) + "</h2></div>" +
+        '<p class="muted">' + esc(z.desc) + "</p>" +
+        '<div class="chips">' + chips + "</div>" +
+      "</div>" +
+      '<button class="btn wide" type="button" data-act="goto" data-zone="' + z.id + '" style="margin-top:12px">내 피클 부르기</button>' +
+      '<div class="sec">지금 여기 <span class="cnt">' + people.length + "</span></div>" +
+      (people.length ? '<div class="people">' + people.map(personRow).join("") + "</div>" : '<p class="empty">아직 아무도 없어요. 내 피클을 불러볼까요?</p>') +
+      '<div class="sec">구역 메모 <span class="cnt">' + open + "</span></div>" +
+      '<ul class="notes">' + noteItems(notes, false) + "</ul>";
+  }
+
+  function renderPanel() {
+    var tabsEl = $("#tabs");
+    $$(".tab", tabsEl).forEach(function (t) {
+      var on = t.getAttribute("data-tab") === S.tab;
+      t.classList.toggle("on", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    var scroll = panelBody.scrollTop;
+    panelBody.innerHTML = S.tab === "all" ? allView() : (ZONE_MAP[S.tab] ? zoneView(ZONE_MAP[S.tab]) : allView());
+    panelBody.scrollTop = scroll;
+
+    var sel = $("#noteZone");
+    if (sel && S.tab !== "all") sel.value = S.tab;
+    else if (sel && !sel.value) sel.value = S.me.zone || "admin";
+  }
+
+  function renderMode() {
+    var badge = $("#connBadge");
+    if (!badge) return;
+    badge.className = "badge " + (S.live ? "live" : "local");
+    badge.innerHTML = "<i></i>" + (S.live ? "실시간 연결됨" : "로컬 미리보기");
+    var note = $("#modeNote");
+    if (note) {
+      note.textContent = S.live
+        ? "실시간 동기화 중 · Firebase Realtime Database"
+        : "로컬 미리보기 모드 (실시간 DB 연결 대기) · 지금은 이 브라우저에만 저장돼요";
+    }
+  }
+
+  function renderMe() {
+    var av = $("#qbAvatar");
+    if (av) {
+      av.style.background = normColor(S.me.color);
+      av.textContent = S.me.consonant;
+    }
+    var foot = $("#footnote");
+    if (foot) foot.textContent = "빵빵이네 합동 비서실 · 방 " + S.room + " · 피클 " + allPickles().length;
+  }
+
+  function renderAll() {
+    ensureMine();
+    renderCritters();
+    renderRooms();
+    renderPanel();
+    renderMode();
+    renderMe();
+  }
+
+  /* ============ 7. 이동 ============ */
+  var moveTimer = null;
+
+  function setMyPos(pt, animate) {
+    S.myPos = pt;
+    var btn = critEls[S.me.id];
+    if (btn) place(btn, pt, !!animate);
+  }
+
+  function moveSteps(steps) {
+    clearTimeout(moveTimer);
+    var i = 0;
+    function next() {
+      if (i >= steps.length) return;
+      var pt = steps[i++];
+      var btn = critEls[S.me.id];
+      if (btn) {
+        btn.classList.add("walking");
+        clearTimeout(btn.__wt);
+        btn.__wt = setTimeout(function () { btn.classList.remove("walking"); }, 780);
+      }
+      setMyPos(pt, true);
+      if (i < steps.length) moveTimer = setTimeout(next, 700);
+    }
+    next();
+  }
+
+  function moveMeTo(zoneId, point) {
+    if (!ZONE_MAP[zoneId]) return;
+    var target = point ? clampToZone(zoneId, point) : slotForMe(zoneId);
+    var prevZone = zoneOfPoint(S.myPos);
+    var steps = [];
+    if (prevZone && prevZone !== zoneId) steps.push({ x: 50, y: 50 });
+    steps.push(target);
+    moveSteps(steps);
+    if (S.me.zone !== zoneId) {
+      S.me.zone = zoneId;
+      saveMe();
+      pushMe();
+      renderAll();
+    } else {
+      renderRooms();
+    }
+  }
+
+  function slotForMe(zoneId) {
+    var list = allPickles().filter(function (p) { return p.zone === zoneId; });
+    var idx = 0;
+    for (var i = 0; i < list.length; i++) if (list[i].id === S.me.id) idx = i;
+    return slotPos(zoneId, idx, Math.max(list.length, 1));
+  }
+
+  function selectZone(zoneId) {
+    S.tab = zoneId;
+    renderPanel();
+    renderRooms();
+  }
+
+  function onCritterClick(id) {
+    if (id === S.me.id) {
+      openProfile();
+      return;
+    }
+    var p = S.pickles[id];
+    if (!p) return;
+    selectZone(p.zone);
+    if (p.sample) toast(p.name + "은(는) 미리보기용 샘플 피클이에요");
+  }
+
+  /* ============ 8. 모달 · 토스트 ============ */
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $("#toast");
+    if (!t) return;
+    t.textContent = msg;
+    t.classList.add("on");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("on"); }, 2400);
+  }
+
+  function openModal(id) {
+    var m = document.getElementById(id);
+    if (!m) return;
+    m.hidden = false;
+    document.body.style.overflow = "hidden";
+    var first = m.querySelector("input,select,button");
+    if (first && window.innerWidth > 620) {
+      setTimeout(function () { try { first.focus(); } catch (e) { /* ignore */ } }, 80);
+    }
+  }
+  function closeModal(m) {
+    if (!m) return;
+    m.hidden = true;
+    document.body.style.overflow = "";
+  }
+  function closeAllModals() {
+    $$(".modal").forEach(function (m) { closeModal(m); });
+  }
+
+  function copyText(text) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      return navigator.clipboard.writeText(text).then(function () { return true; }).catch(function () {
+        return fallbackCopy(text);
+      });
+    }
+    return Promise.resolve(fallbackCopy(text));
+  }
+  function fallbackCopy(text) {
+    try {
+      var ta = document.createElement("textarea");
+      ta.value = text;
+      ta.style.position = "fixed";
+      ta.style.top = "-1000px";
+      ta.style.opacity = "0";
+      document.body.appendChild(ta);
+      ta.focus();
+      ta.select();
+      var ok = document.execCommand("copy");
+      ta.remove();
+      return ok;
+    } catch (e) { return false; }
+  }
+
+  /* ============ 9. 초대 ============ */
+  var invColor = COLORS[2].hex;
+
+  function inviteLink() {
+    var name = ($("#invName").value || "").trim() || "친구";
+    var cons = $("#invConsonant").value || "ㄱ";
+    var u = new URL(location.href);
+    u.search = "";
+    u.hash = "";
+    var p = u.searchParams;
+    p.set("room", S.room);
+    p.set("name", name);
+    p.set("consonant", cons);
+    p.set("color", invColor.replace("#", ""));
+    p.set("role", "guest");
+    return u.toString();
+  }
+
+  function buildInvite() {
+    var linkEl = $("#invLink");
+    if (!linkEl) return;
+    linkEl.value = inviteLink();
+    var roomEl = $("#invRoom");
+    if (roomEl) roomEl.textContent = S.room;
+    var noteEl = $("#invNote");
+    if (noteEl) {
+      var msg = "방 코드 <b>" + esc(S.room) + "</b> · ";
+      if (location.protocol === "file:") {
+        msg += "파일로 직접 열면 초대 링크가 동작하지 않아요. 웹 주소(GitHub Pages 등)로 열었을 때 초대가 됩니다.";
+      } else if (S.live) {
+        msg += "링크를 받은 분의 피클이 이 방에 게스트로 들어와 함께 움직여요.";
+      } else {
+        msg += "지금은 로컬 미리보기 모드예요. Firebase 실시간 DB를 연결하면 이 링크로 들어온 피클들이 실제로 같은 방에서 함께 움직입니다.";
+      }
+      noteEl.innerHTML = msg;
+    }
+  }
+
+  function openInvite() {
+    buildInvite();
+    openModal("inviteModal");
+  }
+
+  /* ============ 10. 내 피클 편집 ============ */
+  var pfDraft = null;
+
+  function jamoGridHTML(selected, prefix) {
+    return CONSONANTS.map(function (c) {
+      return '<button type="button" class="' + (c === selected ? "on" : "") + '" data-' + prefix + '="' + c + '">' + c + "</button>";
+    }).join("");
+  }
+  function swatchHTML(selected, attr) {
+    return COLORS.map(function (c) {
+      var on = normColor(c.hex) === normColor(selected) ? " on" : "";
+      return '<button type="button" class="' + on.trim() + '" data-' + attr + '="' + c.hex + '" style="--c:' + c.hex + '" aria-label="' + c.name + '"></button>';
+    }).join("");
+  }
+
+  function openProfile() {
+    pfDraft = { consonant: S.me.consonant, color: normColor(S.me.color) };
+    $("#pfName").value = S.me.name || "";
+    $("#pfOwner").value = S.me.owner || "";
+    $("#pfStatus").value = S.me.status || "";
+    $("#pfWander").checked = !!S.wander;
+    $("#jamoGrid").innerHTML = jamoGridHTML(pfDraft.consonant, "jamo");
+    $("#colorSwatches").innerHTML = swatchHTML(pfDraft.color, "color");
+    updateProfilePreview();
+    openModal("profileModal");
+  }
+
+  function updateProfilePreview() {
+    var prev = $("#profPreview");
+    if (prev) {
+      prev.style.background = normColor(pfDraft.color);
+      prev.textContent = pfDraft.consonant;
+    }
+    var n = $("#profNamePrev");
+    if (n) n.textContent = ($("#pfName").value || "").trim() || "피클";
+    var o = $("#profOwnerPrev");
+    if (o) o.textContent = ($("#pfOwner").value || "").trim() || "소유자 없음";
+  }
+
+  function saveProfile() {
+    var name = ($("#pfName").value || "").trim().slice(0, 12) || "피클";
+    var owner = ($("#pfOwner").value || "").trim().slice(0, 24);
+    var status = ($("#pfStatus").value || "").trim().slice(0, 60);
+    S.me.name = name;
+    S.me.owner = owner;
+    S.me.status = status;
+    S.me.consonant = pfDraft.consonant;
+    S.me.color = pfDraft.color;
+    S.wander = !!$("#pfWander").checked;
+    saveMe();
+    try { localStorage.setItem("pickleOffice:wander", S.wander ? "1" : "0"); } catch (e) { /* ignore */ }
+    pushMe();
+    var st = $("#statusInput");
+    if (st) st.value = status;
+    renderAll();
+    closeModal($("#profileModal"));
+    toast("내 피클을 저장했어요");
+  }
+
+  /* ============ 11. 이벤트 연결 ============ */
+  function bind() {
+    stageEl = $("#stage");
+    critterLayer = $("#critters");
+    panelBody = $("#panelBody");
+
+    // 방 클릭 → 선택 + 그 자리로 이동
+    stageEl.addEventListener("click", function (ev) {
+      if (ev.target.closest(".critter")) return;
+      var rect = stageEl.getBoundingClientRect();
+      var pt = {
+        x: ((ev.clientX - rect.left) / rect.width) * 100,
+        y: ((ev.clientY - rect.top) / rect.height) * 100
+      };
+      var zid = zoneOfPoint(pt);
+      if (!zid) return;
+      selectZone(zid);
+      moveMeTo(zid, pt);
+    });
+    stageEl.addEventListener("keydown", function (ev) {
+      if (ev.key !== "Enter" && ev.key !== " ") return;
+      var room = ev.target.closest && ev.target.closest(".room");
+      if (!room) return;
+      ev.preventDefault();
+      var zid = room.getAttribute("data-zone");
+      selectZone(zid);
+      moveMeTo(zid);
+    });
+
+    // 탭
+    $("#tabs").addEventListener("click", function (ev) {
+      var t = ev.target.closest(".tab");
+      if (!t) return;
+      selectZone(t.getAttribute("data-tab"));
+    });
+
+    // 패널 안 위임 클릭
+    panelBody.addEventListener("click", function (ev) {
+      var check = ev.target.closest("[data-check]");
+      if (check) { toggleNote(check.getAttribute("data-check")); return; }
+      var del = ev.target.closest("[data-del]");
+      if (del) { armDelete(del); return; }
+      var go = ev.target.closest('[data-act="goto"]');
+      if (go) {
+        var zid = go.getAttribute("data-zone");
+        selectZone(zid);
+        moveMeTo(zid);
+        toast(ZONE_MAP[zid].name + "으로 걸어갔어요");
+        return;
+      }
+      var person = ev.target.closest("[data-person]");
+      if (person) {
+        var p = S.pickles[person.getAttribute("data-person")];
+        if (p && p.zone) selectZone(p.zone);
+        return;
+      }
+    });
+
+    // 상태 저장
+    $("#statusForm").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var v = ($("#statusInput").value || "").trim().slice(0, 60);
+      S.me.status = v;
+      saveMe();
+      pushMe();
+      renderAll();
+      toast(v ? "말풍선을 바꿨어요" : "말풍선을 지웠어요");
+    });
+
+    // 메모
+    var noteText = $("#noteText");
+    noteText.addEventListener("input", function () {
+      $("#noteCount").textContent = noteText.value.length + "/200";
+    });
+    noteText.addEventListener("keydown", function (ev) {
+      if ((ev.metaKey || ev.ctrlKey) && ev.key === "Enter") {
+        ev.preventDefault();
+        $("#noteForm").dispatchEvent(new Event("submit", { cancelable: true }));
+      }
+    });
+    $("#noteForm").addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      var zoneId = $("#noteZone").value || S.me.zone || "admin";
+      if (addNote(zoneId, noteText.value)) {
+        noteText.value = "";
+        $("#noteCount").textContent = "0/200";
+        if (S.tab === "all") selectZone(zoneId);
+      }
+    });
+
+    // 헤더 버튼
+    $("#btnInvite").addEventListener("click", openInvite);
+    $("#btnProfile").addEventListener("click", openProfile);
+
+    // 초대 모달
+    $("#invConsonant").innerHTML = CONSONANTS.map(function (c) {
+      return '<option value="' + c + '">' + c + "</option>";
+    }).join("");
+    $("#invConsonant").value = "ㄱ";
+    $("#invColors").innerHTML = swatchHTML(invColor, "invcolor");
+    $("#invName").addEventListener("input", buildInvite);
+    $("#invConsonant").addEventListener("change", buildInvite);
+    $("#invColors").addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-invcolor]");
+      if (!b) return;
+      invColor = normColor(b.getAttribute("data-invcolor"));
+      $$("#invColors button").forEach(function (x) { x.classList.toggle("on", normColor(x.getAttribute("data-invcolor")) === invColor); });
+      buildInvite();
+    });
+    $("#copyLink").addEventListener("click", function () {
+      copyText($("#invLink").value).then(function (ok) {
+        toast(ok ? "초대 링크를 복사했어요" : "복사가 안 됐어요. 링크를 길게 눌러 복사해 주세요");
+      });
+    });
+    $("#shareLink").addEventListener("click", function () {
+      var url = $("#invLink").value;
+      if (navigator.share) {
+        navigator.share({ title: "빵빵이네 합동 비서실", text: "우리 합동 비서실에 피클로 들어와!", url: url })
+          .catch(function () { /* 사용자가 취소 */ });
+      } else {
+        copyText(url).then(function (ok) { toast(ok ? "초대 링크를 복사했어요" : "이 브라우저에서는 공유가 안 돼요"); });
+      }
+    });
+
+    // 프로필 모달
+    $("#jamoGrid").addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-jamo]");
+      if (!b) return;
+      pfDraft.consonant = b.getAttribute("data-jamo");
+      $$("#jamoGrid button").forEach(function (x) { x.classList.toggle("on", x.getAttribute("data-jamo") === pfDraft.consonant); });
+      updateProfilePreview();
+    });
+    $("#colorSwatches").addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-color]");
+      if (!b) return;
+      pfDraft.color = normColor(b.getAttribute("data-color"));
+      $$("#colorSwatches button").forEach(function (x) { x.classList.toggle("on", normColor(x.getAttribute("data-color")) === pfDraft.color); });
+      updateProfilePreview();
+    });
+    $("#pfName").addEventListener("input", updateProfilePreview);
+    $("#pfOwner").addEventListener("input", updateProfilePreview);
+    $("#pfSave").addEventListener("click", saveProfile);
+
+    // 모달 공통 닫기
+    document.addEventListener("click", function (ev) {
+      if (ev.target.closest("[data-close]")) {
+        var m = ev.target.closest(".modal");
+        closeModal(m || document.getElementById("inviteModal") || document.getElementById("profileModal"));
+        return;
+      }
+      if (ev.target.classList && ev.target.classList.contains("modal")) {
+        closeModal(ev.target);
+      }
+    });
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape") closeAllModals();
+    });
+
+    // 창 닫힐 때 내 흔적 정리
+    window.addEventListener("pagehide", function () {
+      if (S.cloudOK && cloudRefs) {
+        try { cloudRefs.meRef.remove(); } catch (e) { /* ignore */ }
+      } else {
+        var all = lsGet("presence", {});
+        delete all[S.me.id];
+        lsSet("presence", all);
+        broadcast();
+      }
+    });
+
+    // 시간 표시 갱신
+    setInterval(function () {
+      if (!panelBody || document.hidden) return;
+      renderPanel();
+    }, 45000);
+  }
+
+  function armDelete(btn) {
+    var id = btn.getAttribute("data-del");
+    if (btn.getAttribute("data-armed") === "1") {
+      deleteNote(id);
+      return;
+    }
+    btn.setAttribute("data-armed", "1");
+    btn.classList.add("armed");
+    btn.textContent = "삭제?";
+    setTimeout(function () {
+      if (document.body.contains(btn)) {
+        btn.removeAttribute("data-armed");
+        btn.classList.remove("armed");
+        btn.textContent = "×";
+      }
+    }, 2800);
+  }
+
+  /* ============ 12. 샘플 피클 배회 ============ */
+  function startSampleWander() {
+    setInterval(function () {
+      if (S.cloudOK || S.hideSamples || document.hidden) return;
+      var changed = false;
+      SAMPLE_DEFS.forEach(function (def) {
+        if (Math.random() > 0.34) return;
+        var zone = ZONE_IDS[Math.floor(Math.random() * ZONE_IDS.length)];
+        var talks = SAMPLE_TALK[zone] || ["일하는 중"];
+        var st = sampleState[def.id] || {};
+        st.zone = zone;
+        st.status = talks[Math.floor(Math.random() * talks.length)];
+        sampleState[def.id] = st;
+        changed = true;
+      });
+      if (changed) {
+        S.pickles = S.cloudOK ? S.pickles : readLocalPresence();
+        addSamples();
+        ensureMine();
+        renderAll();
+      }
+    }, 22000);
+  }
+
+  function startMyWander() {
+    setInterval(function () {
+      if (!S.wander || S.cloudOK || document.hidden) return;
+      var zone = ZONE_IDS[Math.floor(Math.random() * ZONE_IDS.length)];
+      if (zone === S.me.zone) return;
+      var a = ZONE_MAP[zone].area;
+      moveMeTo(zone, {
+        x: a.x0 + Math.random() * (a.x1 - a.x0),
+        y: a.y0 + Math.random() * (a.y1 - a.y0)
+      });
+    }, 24000);
+  }
+
+  /* ============ 13. 시작 ============ */
+  async function boot() {
+    var ident = loadIdentity();
+    S.me = ident.me;
+    bind();
+
+    // 초기 위치
+    var a = ZONE_MAP[S.me.zone].area;
+    S.myPos = { x: (a.x0 + a.x1) / 2, y: (a.y0 + a.y1) / 2 };
+
+    try { S.wander = localStorage.getItem("pickleOffice:wander") === "1"; } catch (e) { S.wander = false; }
+    try { S.hideSamples = localStorage.getItem("pickleOffice:hideSamples") === "1"; } catch (e) { S.hideSamples = false; }
+
+    var st = $("#statusInput");
+    if (st) st.value = S.me.status || "";
+
+    // 로컬 모드 먼저 그려 두고, 설정이 있으면 클라우드로 전환
+    initBroadcast();
+    S.pickles = readLocalPresence();
+    S.notes = lsGet("notes", []);
+    if (!lsGet("seeded", false)) {
+      seedStarters(false);
+      lsSet("seeded", true);
+      S.notes = lsGet("notes", []);
+    }
+    addSamples();
+    S.pickles[S.me.id] = myPayload();
+    pushMe();
+    renderAll();
+
+    // 내 피클 위치 잡기
+    var btn = critEls[S.me.id];
+    if (btn) place(btn, S.myPos, false);
+
+    startSampleWander();
+    startMyWander();
+
+    setInterval(function () {
+      if (S.cloudOK) return;
+      pushMe();
+    }, 30000);
+
+    var hasDb = !!(FIREBASE_CONFIG.databaseURL && String(FIREBASE_CONFIG.databaseURL).trim());
+    if (hasDb) {
+      try {
+        await startCloud();
+        S.live = true;
+        S.pickles[S.me.id] = myPayload();
+        renderAll();
+        var b2 = critEls[S.me.id];
+        if (b2) place(b2, S.myPos, false);
+      } catch (e) {
+        S.live = false;
+        S.cloudOK = false;
+        renderAll();
+        toast("실시간 연결에 실패해 로컬 모드로 열었어요");
+        if (window.console) console.warn("[pickle-office] cloud init failed:", e);
+      }
+    }
+
+    if (ident.fromLink) {
+      toast(S.me.role === "guest" ? "게스트 피클로 방에 들어왔어요" : "피클 정보를 링크에서 불러왔어요");
+    }
+  }
+
+  // 오류 수집(배포 후 디버깅용, 화면에는 표시하지 않음)
+  window.__pickleOfficeErrors = [];
+  window.addEventListener("error", function (e) {
+    window.__pickleOfficeErrors.push(String((e && e.message) || "error"));
+  });
+  window.addEventListener("unhandledrejection", function (e) {
+    window.__pickleOfficeErrors.push("promise: " + String((e && e.reason) || ""));
+  });
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", boot);
+  } else {
+    boot();
+  }
+})();
+</script>
+</body>
+</html>
