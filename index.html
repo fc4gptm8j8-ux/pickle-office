@@ -50,6 +50,7 @@ ul{ list-style:none; }
 .muted{ color:var(--ink2); }
 .small{ font-size:12px; }
 .hide{ display:none !important; }
+[hidden]{ display:none !important; }
 
 /* ---------- header ---------- */
 .topbar{
@@ -77,6 +78,16 @@ ul{ list-style:none; }
   overflow:hidden; text-overflow:ellipsis;
 }
 .brand p{ font-size:11px; color:var(--ink3); margin-top:1px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+@media (max-width:600px){
+  .brand p{ display:none; }
+  .brand h1{ font-size:14.5px; }
+  .badge .bt{ display:none; }
+  .badge{ padding:6px; }
+  .topbar-in{ gap:8px; }
+  .room-tag{ font-size:9px; padding:2px 6px 2px 5px; left:5%; top:4.5%; }
+  .stage-hint{ font-size:10px; }
+  .nf-head select{ font-size:16px; padding:3px 6px; }
+}
 .bar-actions{ display:flex; align-items:center; gap:6px; flex:none; }
 .badge{
   display:inline-flex; align-items:center; gap:5px;
@@ -229,7 +240,8 @@ ul{ list-style:none; }
 @keyframes spin{ to{ transform:rotate(360deg); } }
 .critter .bubble{
   position:absolute; left:50%; bottom:calc(100% + 2px); transform:translate(-50%, 4px) scale(.9);
-  max-width:124px; min-width:34px;
+  margin-left:0;
+  max-width:132px; min-width:36px;
   padding:4px 7px; border-radius:9px;
   background:rgba(255,253,248,.97); border:1px solid rgba(226,213,191,.95);
   box-shadow:0 3px 10px rgba(70,52,30,.14);
@@ -237,9 +249,9 @@ ul{ list-style:none; }
   text-align:center; letter-spacing:-.02em;
   opacity:0; pointer-events:none;
   transition:opacity .18s ease, transform .18s ease;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
   word-break:break-word;
 }
+.critter .bubble .b-in{ display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
 .critter .bubble::after{
   content:""; position:absolute; left:50%; top:100%; margin-left:-4px;
   border:4px solid transparent; border-top-color:rgba(255,253,248,.97);
@@ -320,6 +332,7 @@ ul{ list-style:none; }
 .person .mini{ flex:none; }
 .p-meta{ min-width:0; flex:1; }
 .p-name{ display:flex; align-items:center; gap:4px; font-size:12.5px; font-weight:800; letter-spacing:-.02em; }
+.p-owner{ font-size:10px; font-weight:600; color:var(--ink3); max-width:112px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .p-status{ font-size:11.5px; color:var(--ink2); margin-top:1px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .zone-chip{
   flex:none; padding:2px 7px; border-radius:999px; font-size:10px; font-weight:800;
@@ -335,6 +348,8 @@ ul{ list-style:none; }
 .sec{ display:flex; align-items:center; gap:6px; margin:16px 0 8px; font-size:12px; font-weight:800; color:#6b5c47; letter-spacing:-.02em; }
 .sec .cnt{ font-size:10.5px; font-weight:800; color:#a68d6b; background:#f6efe3; border-radius:999px; padding:1px 6px; }
 .sec .link{ margin-left:auto; font-size:11px; font-weight:700; color:#a68d6b; background:none; border:0; cursor:pointer; text-decoration:underline; }
+.sample-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; padding:7px 10px; border-radius:11px; background:#faf6ee; border:1px dashed #e8dcc8; font-size:10.5px; color:var(--ink3); font-weight:700; }
+.sample-row .link{ font-size:10.5px; font-weight:800; color:#a68d6b; background:none; border:0; cursor:pointer; text-decoration:underline; padding:0; }
 
 .notes{ display:flex; flex-direction:column; gap:7px; }
 .note{
@@ -357,7 +372,7 @@ ul{ list-style:none; }
 .n-body p{ font-size:12.5px; line-height:1.45; letter-spacing:-.02em; word-break:break-word; }
 .n-meta{ display:flex; align-items:center; gap:4px; margin-top:4px; font-size:10px; color:var(--ink3); flex-wrap:wrap; }
 .del{
-  flex:none; width:22px; height:22px; border-radius:7px; border:0; background:transparent;
+  flex:none; width:26px; height:26px; border-radius:8px; border:0; background:transparent;
   color:#c3b6a2; font-size:15px; line-height:1; cursor:pointer;
   display:grid; place-items:center;
 }
@@ -366,12 +381,12 @@ ul{ list-style:none; }
 .empty{ font-size:12px; color:var(--ink3); padding:12px 4px; line-height:1.5; text-align:center; }
 
 .note-form{ border-top:1px solid var(--line); padding:10px 12px calc(10px + env(safe-area-inset-bottom)); background:#fffdf9; }
-.nf-head{ display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+.nf-head{ display:flex; align-items:center; justify-content:space-between; gap:6px; margin-bottom:6px; }
 .nf-head select{
   flex:none; padding:5px 8px; border-radius:9px; border:1px solid var(--line2);
-  background:#fbf6ed; font-size:11.5px; font-weight:700; color:#6b5c47; max-width:110px;
+  background:#fbf6ed; font-size:11.5px; font-weight:700; color:#6b5c47; max-width:130px;
 }
-.nf-head .lbl{ font-size:11px; color:var(--ink3); font-weight:700; }
+.nf-head .lbl{ font-size:11.5px; color:#7b6b52; font-weight:800; letter-spacing:-.02em; }
 .note-form textarea{
   width:100%; resize:none; border:1px solid var(--line2); border-radius:12px;
   padding:9px 10px; font-size:16px; line-height:1.4; background:#fffdf8; outline:none;
@@ -473,7 +488,7 @@ ul{ list-style:none; }
       </div>
     </div>
     <div class="bar-actions">
-      <span class="badge local" id="connBadge"><i></i>로컬 미리보기</span>
+      <span class="badge local" id="connBadge" title="실시간 DB 연결 대기"><i></i><span class="bt">로컬 미리보기</span></span>
       <button class="btn btn-sm" id="btnInvite" type="button">초대</button>
       <button class="btn btn-sm btn-primary" id="btnProfile" type="button">내 피클</button>
     </div>
@@ -527,7 +542,9 @@ ul{ list-style:none; }
             <rect x="20" y="154" width="82" height="52" rx="8" fill="#cfdadb" stroke="#b4c2c3" stroke-width="1.4"/>
             <rect x="27" y="161" width="68" height="12" rx="4" fill="#f0f6f6"/>
             <rect x="27" y="180" width="68" height="12" rx="4" fill="#f0f6f6"/>
-            <circle cx="94" cy="160" r="3" fill="#b9c7c8"/>
+            <path d="M100 158h8v22h-8" fill="none" stroke="#a9b7b8" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="28" cy="208" r="3.4" fill="#96a5a7"/>
+            <circle cx="94" cy="208" r="3.4" fill="#96a5a7"/>
 
             <!-- deck oven -->
             <rect x="244" y="86" width="136" height="96" rx="10" fill="#b8c4c8" opacity=".25"/>
@@ -552,11 +569,12 @@ ul{ list-style:none; }
             <!-- sink -->
             <rect x="16" y="292" width="82" height="72" rx="9" fill="url(#steelH)" stroke="#b6c6c7" stroke-width="1.6"/>
             <rect x="24" y="300" width="66" height="40" rx="6" fill="#dbe7e8" stroke="#b9c7c8" stroke-width="1.4"/>
-            <circle cx="90" cy="306" r="4.5" fill="#cfdcdd"/>
+            <path d="M78 302c8 0 10 4 10 10v6" fill="none" stroke="#a5b6b7" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="88" cy="322" r="2.4" fill="#a5b6b7"/>
 
             <!-- floor drain -->
-            <circle cx="216" cy="214" r="9" fill="#dbe6e5"/>
-            <path d="M210 210h12M210 214h12M210 218h12" stroke="#c6d4d3" stroke-width="1.2"/>
+            <circle cx="252" cy="196" r="9" fill="#dbe6e5"/>
+            <path d="M246 192h12M246 196h12M246 200h12" stroke="#c6d4d3" stroke-width="1.2"/>
           </svg>
           <div class="room-tag"><span class="dot"></span>해썹 생산실</div>
           <div class="room-foot">
@@ -580,11 +598,11 @@ ul{ list-style:none; }
             <rect y="64" width="400" height="6" fill="#eeddc2"/>
 
             <!-- whiteboard -->
-            <rect x="96" y="12" width="196" height="44" rx="7" fill="#ffffff" stroke="#e6d5bb" stroke-width="2"/>
-            <rect x="108" y="24" width="58" height="5" rx="2.5" fill="#f2c98a"/>
-            <rect x="174" y="24" width="32" height="5" rx="2.5" fill="#c8dcf3"/>
-            <rect x="108" y="35" width="104" height="5" rx="2.5" fill="#f6e2c6"/>
-            <circle cx="266" cy="34" r="8" fill="#ffe1b6"/>
+            <rect x="150" y="12" width="196" height="44" rx="7" fill="#ffffff" stroke="#e6d5bb" stroke-width="2"/>
+            <rect x="162" y="24" width="58" height="5" rx="2.5" fill="#f2c98a"/>
+            <rect x="228" y="24" width="32" height="5" rx="2.5" fill="#c8dcf3"/>
+            <rect x="162" y="35" width="104" height="5" rx="2.5" fill="#f6e2c6"/>
+            <circle cx="320" cy="34" r="8" fill="#ffe1b6"/>
 
             <!-- demo counter -->
             <rect x="240" y="88" width="138" height="60" rx="10" fill="#c9a97f" opacity=".3"/>
@@ -643,11 +661,11 @@ ul{ list-style:none; }
             <rect y="62" width="400" height="6" fill="#e9dcc7"/>
 
             <!-- dispatch board -->
-            <rect x="132" y="12" width="140" height="42" rx="6" fill="#ffffff" stroke="#e3d4bd" stroke-width="2"/>
-            <rect x="146" y="22" width="54" height="4.5" rx="2.2" fill="#dcae7d"/>
-            <rect x="146" y="32" width="86" height="4.5" rx="2.2" fill="#e8ddcb"/>
-            <rect x="146" y="42" width="40" height="4.5" rx="2.2" fill="#e8ddcb"/>
-            <rect x="238" y="20" width="22" height="14" rx="3" fill="#f2e2c9"/>
+            <rect x="176" y="12" width="140" height="42" rx="6" fill="#ffffff" stroke="#e3d4bd" stroke-width="2"/>
+            <rect x="190" y="22" width="54" height="4.5" rx="2.2" fill="#dcae7d"/>
+            <rect x="190" y="32" width="86" height="4.5" rx="2.2" fill="#e8ddcb"/>
+            <rect x="190" y="42" width="40" height="4.5" rx="2.2" fill="#e8ddcb"/>
+            <rect x="282" y="20" width="22" height="14" rx="3" fill="#f2e2c9"/>
 
             <!-- packing tables -->
             <rect x="18" y="90" width="170" height="64" rx="9" fill="#c49a6c" opacity=".3"/>
@@ -786,8 +804,8 @@ ul{ list-style:none; }
       <div class="panel-body" id="panelBody"></div>
       <form class="note-form" id="noteForm" autocomplete="off">
         <div class="nf-head">
+          <span class="lbl">메모 남기기</span>
           <select id="noteZone" aria-label="메모 구역"></select>
-          <span class="lbl">에 메모 남기기</span>
         </div>
         <textarea id="noteText" rows="2" maxlength="200" placeholder="예: 오븐 180℃ 예열 확인 · 창업반 2주차 자료 마무리"></textarea>
         <div class="nf-foot">
@@ -1103,12 +1121,14 @@ ul{ list-style:none; }
   }
 
   function pushMe() {
+    var payload = myPayload();
+    S.pickles[S.me.id] = payload; // 화면이 항상 현재 값을 보도록
     if (S.cloudOK && cloudRefs) {
-      try { cloudRefs.meRef.update(myPayload()); } catch (e) { /* ignore */ }
+      try { cloudRefs.meRef.update(payload); } catch (e) { /* ignore */ }
       return;
     }
     var all = lsGet("presence", {});
-    all[S.me.id] = myPayload();
+    all[S.me.id] = payload;
     lsSet("presence", all);
     broadcast();
   }
@@ -1191,6 +1211,7 @@ ul{ list-style:none; }
     pRef.on("value", function (snap) {
       S.pickles = snap.val() || {};
       ensureMine();
+      if (!S.live) S.live = true;
       renderAll();
     });
     nRef.on("value", function (snap) {
@@ -1365,7 +1386,7 @@ ul{ list-style:none; }
     btn.className = "critter";
     btn.setAttribute("data-id", p.id);
     btn.innerHTML =
-      '<span class="bubble"></span>' +
+      '<span class="bubble"><span class="b-in"></span></span>' +
       '<span class="body">' + BODY_SVG + '</span>' +
       '<span class="tag"><span class="jamo"></span><span class="nm"></span></span>';
     btn.addEventListener("click", function (ev) {
@@ -1389,8 +1410,14 @@ ul{ list-style:none; }
     var name = p.name || "피클";
     if (nm.textContent !== name) nm.textContent = name;
     var bubble = btn.querySelector(".bubble");
+    var bin = btn.querySelector(".b-in");
     var show = (p.id === S.me.id || S.tab === p.zone) && !!p.status;
-    if (bubble.textContent !== (p.status || "")) bubble.textContent = p.status || "";
+    if (bin && bin.textContent !== (p.status || "")) {
+      bin.textContent = p.status || "";
+      // 글자 수에 맞춰 말풍선 폭을 정한다(줄바꿈이 어색하게 잡히지 않도록)
+      var t = bin.textContent;
+      if (t) bubble.style.width = Math.min(132, Math.max(36, 16 + Math.round(t.length * 9.4))) + "px";
+    }
     bubble.classList.toggle("on", !!show);
     btn.setAttribute("aria-label",
       (p.name || "피클") + (p.id === S.me.id ? " (나)" : "") + " · " +
@@ -1485,7 +1512,8 @@ ul{ list-style:none; }
     return '<div class="person" data-person="' + esc(p.id) + '" role="button" tabindex="0">' +
       '<span class="mini" style="--c:' + normColor(p.color) + '">' + esc(p.consonant || "·") + "</span>" +
       '<div class="p-meta">' +
-        '<div class="p-name">' + esc(p.name || "피클") + chips + "</div>" +
+        '<div class="p-name">' + esc(p.name || "피클") +
+          (p.owner ? '<span class="p-owner">' + esc(p.owner) + "</span>" : "") + chips + "</div>" +
         '<div class="p-status">' + esc(p.status || "상태 없음") + "</div>" +
       "</div>" +
       '<span class="zone-chip" style="border-color:' + z.accent + "33;color:" + z.accent + '">' + esc(z.short) + "</span>" +
@@ -1528,7 +1556,13 @@ ul{ list-style:none; }
       "</div>";
     var roster = '<div class="people">' + (people.length ? people.map(personRow).join("") : '<p class="empty">아직 아무도 없어요.</p>') + "</div>";
     var notes = '<ul class="notes">' + noteItems(S.notes, true) + "</ul>";
-    return head + '<div class="sec">지금 방에 있는 피클 <span class="cnt">' + people.length + "</span></div>" + roster +
+    var sampleRow = "";
+    if (!S.cloudOK) {
+      var sampleCount = people.filter(function (p) { return p.sample; }).length;
+      sampleRow = '<div class="sample-row"><span>미리보기용 샘플 피클 ' + sampleCount + "개</span>" +
+        '<button type="button" class="link" data-act="togglesamples">' + (S.hideSamples ? "보기" : "숨기기") + "</button></div>";
+    }
+    return head + '<div class="sec">지금 방에 있는 피클 <span class="cnt">' + people.length + "</span></div>" + roster + sampleRow +
       '<div class="sec">구역별 일 <span class="cnt">' + open.length + "</span></div>" + notes;
   }
 
@@ -1561,15 +1595,18 @@ ul{ list-style:none; }
     panelBody.scrollTop = scroll;
 
     var sel = $("#noteZone");
-    if (sel && S.tab !== "all") sel.value = S.tab;
-    else if (sel && !sel.value) sel.value = S.me.zone || "admin";
+    if (sel) {
+      if (S.tab !== "all") sel.value = S.tab;
+      else if (!sel.value) sel.value = S.me.zone || "admin";
+    }
   }
 
   function renderMode() {
     var badge = $("#connBadge");
     if (!badge) return;
     badge.className = "badge " + (S.live ? "live" : "local");
-    badge.innerHTML = "<i></i>" + (S.live ? "실시간 연결됨" : "로컬 미리보기");
+    badge.innerHTML = "<i></i><span class=\"bt\">" + (S.live ? "실시간 연결됨" : "로컬 미리보기") + "</span>";
+    badge.title = S.live ? "Firebase Realtime Database 연결됨" : "실시간 DB 연결 대기";
     var note = $("#modeNote");
     if (note) {
       note.textContent = S.live
@@ -1872,6 +1909,21 @@ ul{ list-style:none; }
         toast(ZONE_MAP[zid].name + "으로 걸어갔어요");
         return;
       }
+      var ts = ev.target.closest('[data-act="togglesamples"]');
+      if (ts) {
+        S.hideSamples = !S.hideSamples;
+        try { localStorage.setItem("pickleOffice:hideSamples", S.hideSamples ? "1" : "0"); } catch (e) { /* ignore */ }
+        if (S.hideSamples) {
+          for (var sid in S.pickles) {
+            if (S.pickles[sid] && S.pickles[sid].sample) delete S.pickles[sid];
+          }
+        } else {
+          addSamples();
+        }
+        renderAll();
+        toast(S.hideSamples ? "샘플 피클을 숨겼어요" : "샘플 피클을 다시 보여줄게요");
+        return;
+      }
       var person = ev.target.closest("[data-person]");
       if (person) {
         var p = S.pickles[person.getAttribute("data-person")];
@@ -1908,7 +1960,6 @@ ul{ list-style:none; }
       if (addNote(zoneId, noteText.value)) {
         noteText.value = "";
         $("#noteCount").textContent = "0/200";
-        if (S.tab === "all") selectZone(zoneId);
       }
     });
 
@@ -2055,9 +2106,10 @@ ul{ list-style:none; }
   }
 
   /* ============ 13. 시작 ============ */
-  async function boot() {
+  function boot() {
     var ident = loadIdentity();
     S.me = ident.me;
+    saveMe(); // 같은 브라우저의 다른 탭과 같은 피클 id를 쓰도록 즉시 저장
     bind();
 
     // 초기 위치
@@ -2069,6 +2121,15 @@ ul{ list-style:none; }
 
     var st = $("#statusInput");
     if (st) st.value = S.me.status || "";
+
+    // 메모 구역 선택지
+    var zsel = $("#noteZone");
+    if (zsel) {
+      zsel.innerHTML = ZONES.map(function (z) {
+        return '<option value="' + z.id + '">' + esc(z.short) + "</option>";
+      }).join("");
+      zsel.value = S.me.zone || "admin";
+    }
 
     // 로컬 모드 먼저 그려 두고, 설정이 있으면 클라우드로 전환
     initBroadcast();
@@ -2098,20 +2159,21 @@ ul{ list-style:none; }
 
     var hasDb = !!(FIREBASE_CONFIG.databaseURL && String(FIREBASE_CONFIG.databaseURL).trim());
     if (hasDb) {
-      try {
-        await startCloud();
-        S.live = true;
+      startCloud().then(function () {
         S.pickles[S.me.id] = myPayload();
         renderAll();
         var b2 = critEls[S.me.id];
         if (b2) place(b2, S.myPos, false);
-      } catch (e) {
+      }).catch(function (e) {
         S.live = false;
         S.cloudOK = false;
         renderAll();
         toast("실시간 연결에 실패해 로컬 모드로 열었어요");
         if (window.console) console.warn("[pickle-office] cloud init failed:", e);
-      }
+      });
+      setTimeout(function () {
+        if (!S.cloudOK) toast("실시간 연결이 지연돼 로컬 모드로 계속할게요");
+      }, 14000);
     }
 
     if (ident.fromLink) {
