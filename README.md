@@ -10,3 +10,10 @@
 https://fc4gptm8j8-ux.github.io/pickle-office/
 
 GitHub Pages가 꺼져 있다면 **Settings → Pages**에서 Source를 `Deploy from a branch`, 브랜치를 `main` / 폴더 `(root)`로 저장하면 위 주소에서 열립니다.
+(2026-11-27 기준 Pages는 아직 꺼져 있어서, 그때까지는 rawcdn.githack.com 주소로 열립니다.)
+
+## 실시간 DB
+
+Firebase 프로젝트 `bbangine-pickle-office`의 **Realtime Database**(싱가포르, Spark 무료)에 연결되어 있습니다.
+`databaseURL`: https://bbangine-pickle-office-default-rtdb.asia-southeast1.firebasedatabase.app
+경로: `pickleOffice/{방}/presence`, `pickleOffice/{방}/notes`
